@@ -8,5 +8,6 @@
     "FolderFiles":  "d:\\Вести для публикации в интернет",
     "WebServerPort":  "8081",
     "debug":  "true",
+    "ffmpegDownloadUrl": "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl-shared.zip",
     "FolderMonitorXML":  "C:\\Users\\qazom\\AppData\\Local\\NodeSoft\\FolderMonitor\\FolderMonitor.xml"
 }
