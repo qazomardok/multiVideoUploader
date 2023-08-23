@@ -1,0 +1,11 @@
+{
+    "Scale_X":  "1280",
+    "WebServerAddress":  "http://localhost",
+    "Logo_X":  "15",
+    "Scale_Y":  "720",
+    "NodeJSPath":  "C:\\Program Files\\nodejs\\node.exe",
+    "Logo_Y":  "15",
+    "FolderFiles":  "d:\\Вести для публикации в интернет",
+    "WebServerPort":  "8081",
+    "debug":  "true"
+}
