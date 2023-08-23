@@ -5,8 +5,8 @@
     "Scale_Y":  "720",
     "NodeJSPath":  "C:\\Program Files\\nodejs\\node.exe",
     "Logo_Y":  "15",
-    "FolderFiles":  "d:\\Вести для публикации в интернет",
+    "FolderFiles":  "d:\\Р’РµСЃС‚Рё РґР»СЏ РїСѓР±Р»РёРєР°С†РёРё РІ РёРЅС‚РµСЂРЅРµС‚",
     "WebServerPort":  "8081",
     "debug":  "true",
-    "ffmpegDownloadUrl": "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl-shared.zip"
+    "FolderMonitorXML":  "C:\\Users\\qazom\\AppData\\Local\\NodeSoft\\FolderMonitor\\FolderMonitor.xml"
 }

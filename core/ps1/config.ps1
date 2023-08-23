@@ -1,4 +1,4 @@
-п»ї
+
 
 $global:Config = Get-Config -FilePath $global:Folder_Work
 $global:Access = Get-Access -FilePath $global:Folder_Work
@@ -24,11 +24,11 @@ if (-not (Test-Path $global:Folder_Files)) {
 }
 
 $global:Folders_Original = @{
-    "input"   = "РСЃС…РѕРґРЅРѕРµ"
-    "cropped" = "РќР°Р»РѕР¶РёС‚СЊ Р»РѕРіРѕС‚РёРї"
-    "withlogo"= "Р“РѕС‚РѕРІРѕРµ"
-    "forsend" = "РћС‚РїСЂР°РІРёС‚СЊ РІ СЃРѕС†СЃРµС‚Рё (СЃРµР№С‡Р°СЃ)"
-    "success" = "РђСЂС…РёРІ"
+    "input"   = "Исходное"
+    "cropped" = "Наложить логотип"
+    "withlogo"= "Готовое"
+    "forsend" = "Отправить в соцсети (сейчас)"
+    "success" = "Архив"
 }
 
 $global:videoExtensions = ".avi", ".mp4", ".mkv", ".mov", ".mpg"

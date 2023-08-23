@@ -1,4 +1,4 @@
-п»ї
+
 function Stop-Run {
     param (
         [Parameter(Mandatory = $true)]
@@ -8,7 +8,7 @@ function Stop-Run {
         Toast "* !$($Msg)!"    
     } 
     
-    Write-Output "* Р Р°Р±РѕС‚Р° Р·Р°РІРµСЂС€РµРЅР°.", "************************************" 
+    Write-Output "* Работа завершена.", "************************************" 
     Exit 0
 }
 
@@ -21,7 +21,7 @@ function Get-Config {
     $Config_File = "$FilePath\core\Config.json"
    
     if (!(Test-Path $Config_File)) {
-        # РЎРѕР·РґР°РЅРёРµ РїСѓСЃС‚РѕРіРѕ РєРѕРЅС„РёРіСѓСЂР°С†РёРѕРЅРЅРѕРіРѕ С„Р°Р№Р»Р°
+        # Создание пустого конфигурационного файла
         Update-Config $Config_File
     }
    
@@ -38,7 +38,7 @@ function Get-Access {
     $Config_File = "$FilePath\core\Access.json"
    
     if (!(Test-Path $Config_File)) {
-        # РЎРѕР·РґР°РЅРёРµ РїСѓСЃС‚РѕРіРѕ РєРѕРЅС„РёРіСѓСЂР°С†РёРѕРЅРЅРѕРіРѕ С„Р°Р№Р»Р°
+        # Создание пустого конфигурационного файла
         Update-Access $Config_File
     }
    
@@ -70,7 +70,7 @@ Function Update-Config {
 
 
     $jsonData = Get-Content -Path $Config_File | Out-String
-    $utf8Encoding = New-Object System.Text.UTF8Encoding($false)  # СѓРєР°Р·С‹РІР°РµРј $false РґР»СЏ Р±РµР·Р·РЅР°РєРѕРІРѕР№ UTF-8
+    $utf8Encoding = New-Object System.Text.UTF8Encoding($false)  # указываем $false для беззнаковой UTF-8
     [System.IO.File]::WriteAllText($Config_File, $jsonData, $utf8Encoding)
 
     # return Get-Config -FilePath $global:Folder_Work
@@ -111,7 +111,7 @@ Function Update-Access {
 
 
     $jsonData = Get-Content -Path $Access_File | Out-String
-    $utf8Encoding = New-Object System.Text.UTF8Encoding($false)  # СѓРєР°Р·С‹РІР°РµРј $false РґР»СЏ Р±РµР·Р·РЅР°РєРѕРІРѕР№ UTF-8
+    $utf8Encoding = New-Object System.Text.UTF8Encoding($false)  # указываем $false для беззнаковой UTF-8
     [System.IO.File]::WriteAllText($Access_File, $jsonData, $utf8Encoding)
 
     # return Get-Config -FilePath $global:Folder_Work
@@ -148,18 +148,18 @@ Function Send-Telegram {
         $updated = $true
     }
     if ([string]::IsNullOrEmpty($global:Access.Telegram.ChatID)) {
-        $input_ChatID = Read-Host "Р’РІРµРґРёС‚Рµ ChatID РєР°РЅР°Р»Р° СѓРІРµРґРѕРјР»РµРЅРёР№ Telegram"
+        $input_ChatID = Read-Host "Введите ChatID канала уведомлений Telegram"
         $global:Access.Telegram | Add-Member -MemberType NoteProperty -Name "ChatID" -Value $input_ChatID -Force
         $updated = $true
     }
     if ([string]::IsNullOrEmpty($global:Access.Telegram.ChatIDPublish)) {
-        $input_ChatIDPublish = Read-Host "Р’РІРµРґРёС‚Рµ ChatID РєР°РЅР°Р»Р° РґР»СЏ РѕС‚РїСЂР°РІРєРё РІРёРґРµРѕ РІ Telegram"
+        $input_ChatIDPublish = Read-Host "Введите ChatID канала для отправки видео в Telegram"
         $global:Access.Telegram | Add-Member -MemberType NoteProperty -Name "ChatID" -Value $input_ChatIDPublish -Force
         $updated = $true
     }
     
     if ([string]::IsNullOrEmpty($global:Access.Telegram.Token)) {
-        $input_Token = Read-Host "Р’РІРµРґРёС‚Рµ Token РґРѕСЃС‚СѓРїР° Рє API Telegram"
+        $input_Token = Read-Host "Введите Token доступа к API Telegram"
         $global:Access.Telegram | Add-Member -MemberType NoteProperty -Name "Token" -Value $input_Token  -Force
         $updated = $true
     }
@@ -171,10 +171,10 @@ Function Send-Telegram {
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     if (![string]::IsNullOrEmpty($Message)) {
         Invoke-RestMethod -Uri "https://api.telegram.org/bot$($global:Access.Telegram.Token)/sendMessage?chat_id=$($global:Access.Telegram.ChatID)&text=$($Message)"
-        "* * TG СѓРІРµРґРѕРјР»РµРЅРёРµ РѕС‚РїСЂР°РІР»РµРЅРѕ: $($Message)"
+        "* * TG уведомление отправлено: $($Message)"
     }
     else {
-        "* * TG СѓРІРµРґРѕРјР»РµРЅРёРµ РЅРµ РѕС‚РїСЂР°РІР»РµРЅРѕ: $($Message)"
+        "* * TG уведомление не отправлено: $($Message)"
     }
 }
 
@@ -187,7 +187,7 @@ function runMMPEG {
         [string]$OnlyConvert = "Fasle",
         [string]$Scale = "Fasle")
 
-    Write-Output "* РџРѕРґРѕР¶РґРёС‚Рµ..."
+    Write-Output "* Подождите..."
          
     Write-Output "* << $From"
     Write-Output "* >> $To"
@@ -218,7 +218,7 @@ function runMMPEG {
     }
 
     Write-Output  $comm
-    Write-Output "* Р“РѕС‚РѕРІРѕ!"
+    Write-Output "* Готово!"
 }
 
 function Escape-VariableValue {
@@ -228,11 +228,11 @@ function Escape-VariableValue {
         [string]$B = "`""
     )
 
-    # РЎРїРёСЃРѕРє СЃРїРµС†РёР°Р»СЊРЅС‹С… СЃРёРјРІРѕР»РѕРІ, РєРѕС‚РѕСЂС‹Рµ С‚СЂРµР±СѓСЋС‚ СЌРєСЂР°РЅРёСЂРѕРІР°РЅРёСЏ
+    # Список специальных символов, которые требуют экранирования
     $specialCharacters = '"`$'
 
     foreach ($char in $specialCharacters) {
-        # Р—Р°РјРµРЅСЏРµРј РєР°Р¶РґС‹Р№ СЃРїРµС†РёР°Р»СЊРЅС‹Р№ СЃРёРјРІРѕР» РЅР° РµРіРѕ СЌРєСЂР°РЅРёСЂРѕРІР°РЅРЅСѓСЋ РІРµСЂСЃРёСЋ
+        # Заменяем каждый специальный символ на его экранированную версию
         $Value = "$B$($Value.Replace($char, "`$char"))$B"
     }
 
