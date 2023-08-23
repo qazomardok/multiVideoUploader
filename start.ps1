@@ -23,6 +23,7 @@ Set-Location $global:Folder_Work
 Write-Output $global:Folder_Work
 . .\core\ps1\functions.ps1
 . .\core\ps1\config.ps1
+. .\core\ps1\install.ps1
 
 # [System.Text.Encoding]::UTF8
 
