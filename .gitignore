@@ -1,4 +1,7 @@
 core/ffmpeg/ffmpeg.exe
+core\foldermonitor\Download .NET Framework 4.8.url
+core\foldermonitor\faq.txt
+core\foldermonitor\FolderMonitor.exe
 core/nodejs/node_modules/.package-lock.json
 core/nodejs/node_modules/.bin/gp12-pem
 core/nodejs/node_modules/.bin/gp12-pem.cmd
