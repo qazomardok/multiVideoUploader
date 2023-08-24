@@ -32,7 +32,7 @@ else {
     $ffmpegExePathInArchive = Get-ChildItem -Path $ffmpegFolderPathTemp -Recurse | Where-Object { $_.Name -eq "ffmpeg.exe" } | Select-Object -First 1
     Move-Item -Path $ffmpegExePathInArchive.FullName -Destination $ffmpegFilePath -Force
 
-    Remove-Item -Path $zipFilePath -Force
+    # Remove-Item -Path $zipFilePath -Force
     Remove-Item -Path $ffmpegFolderPathTemp -Force -Recurse
     
     Write-Host "FFmpeg.exe успешно скачан и сохранен в $ffmpegFilePath"

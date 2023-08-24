@@ -11,7 +11,8 @@ param (
       [int]$AddMin = 0
 )
 
-
+# $SocialSend = "False"
+# $Notify = "False"
 [reflection.assembly]::loadwithpartialname('System.Windows.Forms')
 [reflection.assembly]::loadwithpartialname('System.Drawing')
 
@@ -68,7 +69,7 @@ if ($OnlyNotify -eq "True") {
       }
 }
 else {
-      Write-Output "Режим без уведомлений в Telegram"
+      # Write-Output "Режим без уведомлений в Telegram"
       if ($File -eq "empty") {
             Toast "Начало работы без указания конкретного файла"
       }
@@ -184,7 +185,7 @@ if ($fileFinded) {
             $FileTo = Join-Path -Path $($global:Folders_Today["withlogo"]) -ChildPath "$fileName$fileExtension"
 
             if ($MODE -eq "FOLDER") {                  
-                  Write-Output "* В режиме работы без указания аттрибута -File рабочий файл перемещается в архив."
+                  Write-Output "* ?? В режиме работы без указания аттрибута -File рабочий файл перемещается в архив."
                   try {
                         $counter = 1
                         while (Test-Path $FileArchive) {
@@ -197,11 +198,11 @@ if ($fileFinded) {
                         Move-Item -Path $File -Destination  $FileArchive
                         Write-Output "* $([System.IO.Path]::GetFileName($File)) перемещён в $($global:Folders_Today["success"])."
                         runMMPEG $FileArchive $FileTo $Convert $Scale
-                        Toast "* Проверьте файл $FileTo." -BackgroundColor White -ForegroundColor Red
+                        Toast "* ? Проверьте файл $FileTo." -BackgroundColor White -ForegroundColor Red
                         $File = $FileTo
                   }
                   catch {
-                        Toast "* Возникла ошибка при перемещении $([System.IO.Path]::GetFileName($File)) в архив."
+                        Toast "* ?? Возникла ошибка при перемещении $([System.IO.Path]::GetFileName($File)) в архив."
                         Toast "* `($File`) -> `($FileArchive`)."
                         Write-Output "* $_"
                   }
@@ -218,7 +219,7 @@ if ($fileFinded) {
             Write-Output "*", "************************************"
       }
       else {
-            Write-Output ("* Для установки логотипа добавьте параметр `"-AddLogo `$True`" в запрос.")
+            Write-Output ("* ?? Для установки логотипа добавьте параметр `"-AddLogo `$True`" в запрос.")
       }
 
       if ($SocialSend -eq "True") {
@@ -260,7 +261,7 @@ if ($fileFinded) {
                   Invoke-Expression $command
             }
             else {
-                  Stop-Run -Msg "NodeJS не обнаружен. Установите или проверьте путь к node.exe в файле Config.json (переменная `"NodeJSPath`")"
+                  Stop-Run -Msg "?? NodeJS не обнаружен. Установите или проверьте путь к node.exe в файле Config.json (переменная `"NodeJSPath`")"
             }             
       } else {
             Write-Output ("* Для отправки в социальные сети добавьте параметр `"-SocialSend `$True`" в запрос.")
@@ -288,7 +289,7 @@ if ($fileFinded) {
                  
             }
             catch {
-                  Toast "* Возникла ошибка при перемещении $([System.IO.Path]::GetFileName($File)) в архив."
+                  Toast "* ?? Возникла ошибка при перемещении $([System.IO.Path]::GetFileName($File)) в архив."
                   Toast "* `($File`) -> `($FileArchive`)."
                   Write-Output "* $_"
             }
@@ -364,6 +365,6 @@ if ($fileFinded) {
 }
 
 Write-Output "* Работа завершена.", "************************************"
-#Start-Sleep -Seconds 120
+Start-Sleep -Seconds 1200
 # Environment.Exit(0)
 Exit 0
