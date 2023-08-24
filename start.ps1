@@ -12,7 +12,7 @@
 )
 
 # $SocialSend = "False"
-$Notify = "False"
+# $Notify = "False"
 [reflection.assembly]::loadwithpartialname('System.Windows.Forms')
 [reflection.assembly]::loadwithpartialname('System.Drawing')
 
