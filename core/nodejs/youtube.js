@@ -1,7 +1,7 @@
 ﻿console.log("Starting NodeJS...");
 
-const core = require('./core.js');
-const { google } = require('googleapis');
+const core = require('./app/app.js');
+// const { google } = require('googleapis');
 
 let rewriteYoutubeAccess = false
 
@@ -47,7 +47,7 @@ if (!global.access.Youtube.client_id || !global.access.Youtube.client_secret) {
 
     function authorize(credentials, callback) {
 
-        const oAuth2Client = new google.auth.OAuth2(
+        const oAuth2Client = new core.google.auth.OAuth2(
             credentials.client_id,
             credentials.client_secret,
             `${credentials.redirect_uris[0]}:${global.config.WebServerPort}`);
@@ -95,7 +95,7 @@ if (!global.access.Youtube.client_id || !global.access.Youtube.client_secret) {
     }
 
     function uploadVideo(auth) {
-        const youtube = google.youtube({ version: 'v3', auth });
+        const youtube = core.google.youtube({ version: 'v3', auth });
 
         const requestData = {
             part: 'snippet, status',

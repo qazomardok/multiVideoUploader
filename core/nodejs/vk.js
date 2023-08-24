@@ -1,7 +1,8 @@
 ﻿console.log("Starting NodeJS...");
 
-const core = require('./core.js');
-
+const { exit } = require('process');
+const core = require('./app/app.js');
+exit
 let rewriteVKAccess = false
 
 if (!global.access.VK) {
@@ -112,7 +113,7 @@ function runVKupload() {
             group_id: global.access.VK.Group_ID,
             access_token: global.access.VK.access_token,
             name: Title.newTitle,
-            album_id: Title.PlayListID,
+            album_id: Title.vkPlayListID,
             v: 5.95
         },
         json: true,
@@ -137,7 +138,7 @@ function runVKupload() {
             video_id: video_id,
             owner_id: global.access.VK.user_id,
             name: Title.newTitle,
-            album_id: Title.PlayListID,
+            album_id: Title.vkPlayListID,
             description: '',
             v: 5.95
         };

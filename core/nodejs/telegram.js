@@ -1,6 +1,6 @@
 ﻿console.log("Starting NodeJS...");
 
-const core = require('./core.js');
+const core = require('./app/app.js');
 
 let rewriteTGAccess = false
 

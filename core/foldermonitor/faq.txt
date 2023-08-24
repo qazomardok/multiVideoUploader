@@ -1,0 +1,8 @@
+Q1: The program doesn't start. What can I do to make it start?
+Q2: I get an error message that says I need to install .Net Framework, where can I get that?
+
+A1&2: Did you install Microsoft .Net Framework? If not: please do so now.
+
+Here is the URL:
+
+https://dotnet.microsoft.com/download/dotnet-framework-runtime

@@ -1,14 +1,13 @@
-﻿
-console.log("Starting NodeJS...");
+﻿console.log("Starting NodeJS...");
 
-const core = require('./core.js');
+const core = require('./app/app.js');
 
 const videoFilePath = global.vars.file;
 const apiUrl = 'https://api.ok.ru/fb.do';
 
 function getUploadUrl(callback) {
 
-  let Title = core.newTitle()
+  let Title = core.newTitle();
   const videoFileName = Title.newTitleExt;
   const videoFileSize = core.fs.statSync(videoFilePath).size;
 
@@ -41,7 +40,10 @@ function uploadVideo(uploadUrl) {
 
   //let videoUrl = core.url.parse(uploadUrl);
   let videoId = core.querystring.parse(uploadUrl).id;
-  console.log("Загружается видео...");
+  let Title = core.newTitle();
+  const videoFileName = Title.newTitleExt;
+
+  console.log("Загружается видео " + videoFileName);
   
 
   core.request.post({ url: uploadUrl, formData: formData }, function (err, httpResponse, body) {
