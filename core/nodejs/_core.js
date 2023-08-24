@@ -4,10 +4,10 @@ const path = require('path');
 const request = require('request');
 const querystring = require('querystring');
 const url = require('url');
-const express = require('express'); 
+const express = require('express');
 const bodyParser = require('body-parser');
 const opn = require('opn');
-const readline = require('readline-sync'); 
+const readline = require('readline-sync');
 
 function vars() {
     let vars = process.argv; // будет выведено значение "paramValue"
@@ -19,21 +19,15 @@ function vars() {
     return outvars
 }
 
-global.vars = vars()
-
 function config() {
     const filePath = global.vars["workFolder"] + '\\core\\Config.json';
     return require(filePath);
 }
 
-global.config = config()
-
 function access() {
     const filePath = global.vars["workFolder"] + '\\core\\Access.json';
     return require(filePath);
 }
-
-global.access = access()
 
 function update_access(newconfig) {
     let updatedConfig = JSON.stringify(newconfig, null, 2);
@@ -51,9 +45,45 @@ function telegram($message) {
 }
 
 function getTitle() {
-    const NewTitle = require(global.vars.workFolder + '\\core\\nodejs\\title.js');
-    return NewTitle
+
+    const fileExtension = path.extname(global.vars.file);
+    let TitleA = path.basename(global.vars.file).replace(fileExtension, "").toLowerCase().split(" ");
+    let newTitleR = "";
+    PlayListID = 0;
+    Title = TitleA[0]; 
+
+    newTitleR = require(global.vars.workFolder + '\\core\\nodejs\\title.js');
+
+    delete (TitleA[0]);
+if(newTitleR !== "") {
+    let filteredArr = TitleA.filter(elem => elem !== null && elem !== "" && elem !== undefined);
+
+    if (filteredArr.length > 0) {
+        filteredArr.forEach(function (element) {
+            if (/\d/.test(element)) {
+                newTitleR += " (" + element + ")";
+            } else {
+                // process.exit(0);
+                newTitleR += " " + element.toLowerCase();
+            }
+        });
+    }
+} else {
+    newTitleR = path.basename(global.vars.file, fileExtension);
+    
 }
+    out = {
+        "newTitleExt": newTitleR + fileExtension,
+        "newTitle": newTitleR,
+        "PlayListID": vkPlayListID
+    }
+
+    return out
+}
+
+global.vars = vars()
+global.config = config()
+global.access = access()
 
 module.exports = {
     config: config,
@@ -64,10 +94,10 @@ module.exports = {
     request: request,
     fs: fs,
     path: path,
-    readline:readline,
+    readline: readline,
     querystring: querystring,
     express: express,
-    bodyParser: bodyParser, 
+    bodyParser: bodyParser,
     opn: opn,
     newTitle: getTitle,
     url: url

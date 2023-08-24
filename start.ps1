@@ -262,9 +262,8 @@ if ($fileFinded) {
             else {
                   Stop-Run -Msg "NodeJS не обнаружен. Установите или проверьте путь к node.exe в файле Config.json (переменная `"NodeJSPath`")"
             }             
-      }
-      else {
-            Write-Output ("* Для отправки в ВКонтакте и YouTube добавьте параметр `"-SocialSend `$True`" в запрос.")
+      } else {
+            Write-Output ("* Для отправки в социальные сети добавьте параметр `"-SocialSend `$True`" в запрос.")
       }
 
       if ($Remove -eq "True") {
@@ -362,7 +361,6 @@ if ($fileFinded) {
             }
             
       }
-
 }
 
 Write-Output "* Работа завершена.", "************************************"

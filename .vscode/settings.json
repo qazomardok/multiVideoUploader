@@ -1,5 +1,6 @@
 {
     "window.autoDetectColorScheme": true,
     "explorer.compactFolders": false,
-    "files.encoding": "windows1251"
+    "files.encoding": "windows1251",
+    "files.autoGuessEncoding":true
 }

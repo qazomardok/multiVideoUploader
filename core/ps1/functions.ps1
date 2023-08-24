@@ -188,15 +188,14 @@ function runMMPEG {
         [string]$Scale = "Fasle")
 
     Write-Output "* Подождите..."
-         
+
     Write-Output "* << $From"
     Write-Output "* >> $To"
-                 
+
     # $From
     # $To
     $FFMPEG_Exec = -join ($global:Folder_Work, "\core\ffmpeg\ffmpeg.exe")
     $FFMPEG_LogoFile = -join ($global:Folder_Work, "\img\logo.png")
-
 
     if ($Scale -eq "True") {
         $filter = "-filter_complex `"[0:v]scale=$($global:Config.Scale_X):$($global:Config.Scale_Y)[out]`" -map `"[out]`"  -map 0:a"
@@ -206,13 +205,9 @@ function runMMPEG {
     }
 
     if ($OnlyConvert -eq "True") {
-
-
         $comm = "$FFMPEG_Exec -i `"$From`" -y $filter -c:v h264_amf `"$To`""
         Invoke-Expression $comm
-
-    }
-    else {
+    } else {
        
         & $FFMPEG_Exec -i $From -y -i $FFMPEG_LogoFile -filter_complex "[0:v]scale=$($global:Config.Scale_X):$($global:Config.Scale_Y)[scaled];[scaled][1:v]overlay=$($global:Config.Logo_X):$($global:Config.Logo_Y)[out]" -map "[out]" -map 0:a -c:v h264_amf $To -hide_banner
     }

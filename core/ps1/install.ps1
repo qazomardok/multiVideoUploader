@@ -54,8 +54,6 @@ if (-not (Test-Path -Path $folderMonitorFolderPath -PathType Container)) {
 
 if (Test-Path -Path $folderMonitorFilePath -PathType Leaf) {
     Write-Host "Файл FolderMonitor.exe существует в папке $folderMonitorFolderPath"
-    "Файл настроек"
-
 }
 else {
     Write-Host "Файл FolderMonitor.exe отсутствует в папке $folderMonitorFolderPath"
@@ -83,7 +81,7 @@ if (Test-Path -Path $folderMonitorXmlPath -PathType Leaf) {
         
         $global:Config | Add-Member -MemberType NoteProperty -Name "FolderMonitorXML" -Value $folderMonitorXmlPath -Force
         Update-Config "$($global:Folder_Work)\core\Config.json" $global:Config
-        Write-Host "Файл FolderMonitor.xml найден и путь обновлен в конфигурационном файле."
+        Write-Host "Файл FolderMonitor.xml найден и путь обновлен в конфигурационном файле $folderMonitorXmlPath."
     } else {
         Write-Host "Ключ 'FolderMonitorXML' уже существует в объекте Config."
     }

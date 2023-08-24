@@ -1,6 +1,6 @@
 ﻿console.log("Starting NodeJS...");
 
-const core = require('./core.js');
+const core = require('./_core.js');
 const { google } = require('googleapis');
 
 let rewriteYoutubeAccess = false
