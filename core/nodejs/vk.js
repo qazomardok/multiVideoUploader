@@ -1,7 +1,8 @@
 ﻿console.log("Starting NodeJS...");
 
-const core = require('./_core.js');
-
+const { exit } = require('process');
+const core = require('./app/app.js');
+exit
 let rewriteVKAccess = false
 
 if (!global.access.VK) {

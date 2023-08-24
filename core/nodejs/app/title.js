@@ -12,7 +12,7 @@ switch (Title) {
         // newTitle += "АКТВ Вести";
         newTitle += "Неделя";
         vkPlayListID = 50969645;
-        break;
+        break; 
 }
 
 module.exports = newTitle

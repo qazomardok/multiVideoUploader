@@ -8,7 +8,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const opn = require('opn');
 const readline = require('readline-sync');
-
+const googleapis = require('googleapis');
 function vars() {
     let vars = process.argv; // будет выведено значение "paramValue"
 
@@ -52,7 +52,7 @@ function getTitle() {
     PlayListID = 0;
     Title = TitleA[0]; 
 
-    newTitleR = require(global.vars.workFolder + '\\core\\nodejs\\title.js');
+    newTitleR = require(global.vars.workFolder + '\\core\\nodejs\\app\\title.js');
 
     delete (TitleA[0]);
 if(newTitleR !== "") {
@@ -100,5 +100,6 @@ module.exports = {
     bodyParser: bodyParser,
     opn: opn,
     newTitle: getTitle,
-    url: url
+    url: url,
+    googleapis: googleapis
 };

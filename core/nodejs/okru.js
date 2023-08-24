@@ -1,6 +1,6 @@
 ﻿console.log("Starting NodeJS...");
 
-const core = require('./_core.js');
+const core = require('./app/app.js');
 
 const videoFilePath = global.vars.file;
 const apiUrl = 'https://api.ok.ru/fb.do';

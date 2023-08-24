@@ -1,4 +1,4 @@
-param (
+п»їparam (
       [string]$File = "empty",
       [string]$Notify = "False",
       [string]$OnlyNotify = "False",
@@ -12,11 +12,9 @@ param (
 )
 
 # $SocialSend = "False"
-# $Notify = "False"
+$Notify = "False"
 [reflection.assembly]::loadwithpartialname('System.Windows.Forms')
 [reflection.assembly]::loadwithpartialname('System.Drawing')
-
-Write-Output "Welcome! Привет!"
 
 $global:Folder_Work = $PSScriptRoot
 
@@ -27,29 +25,30 @@ Write-Output $global:Folder_Work
 . .\core\ps1\install.ps1
 
 # [System.Text.Encoding]::UTF8
+Clear-Host
 
-Write-Output "Привет!"
+Write-Output "рџ¤— РџСЂРёРІРµС‚!"
 # if (-not $Notify) {
-#       Write-Host  "Посылать уведомления в Telegram? (y/n): "
+#       Write-Host  "РџРѕСЃС‹Р»Р°С‚СЊ СѓРІРµРґРѕРјР»РµРЅРёСЏ РІ Telegram? (y/n): "
 #       $key = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown").Character
 #       if ($key -eq "y") { $Notify = $True } else { $Notify = "False" }
-#       if ($key -eq "н") { $Notify = $True } else { $Notify = "False" }
+#       if ($key -eq "РЅ") { $Notify = $True } else { $Notify = "False" }
 # }
   
 
 # if (-not $AddLogo) {
-#       Write-Host "Добавить логотип? (y/n): "
+#       Write-Host "Р”РѕР±Р°РІРёС‚СЊ Р»РѕРіРѕС‚РёРї? (y/n): "
 #       $key = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown").Character
 #       if ($key -eq "y") { $AddLogo = $True } else { $AddLogo = "False" }
-#       if ($key -eq "н") { $AddLogo = $True } else { $AddLogo = "False" }
+#       if ($key -eq "РЅ") { $AddLogo = $True } else { $AddLogo = "False" }
 # }
         
 
 # if (-not $SocialSend) {
-#       Write-Host "Загрузить файл в VK и YouTube? (y/n): "
+#       Write-Host "Р—Р°РіСЂСѓР·РёС‚СЊ С„Р°Р№Р» РІ VK Рё YouTube? (y/n): "
 #       $key = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown").Character
 #       if ($key -eq "y") { $SocialSend = $True } else { $SocialSend = "False" }
-#       if ($key -eq "н") { $SocialSend = $True } else { $SocialSend = "False" }
+#       if ($key -eq "РЅ") { $SocialSend = $True } else { $SocialSend = "False" }
 # }
               
                         
@@ -59,22 +58,22 @@ Write-Output "Привет!"
 
 
 
-# ПОСЫЛАЕМ УВЕДОМЛЕНИЕ
+# РџРћРЎР«Р›РђР•Рњ РЈР’Р•Р”РћРњР›Р•РќРР•
 if ($OnlyNotify -eq "True") {
       if ($File -eq "empty") {
-            Send-Telegram "? Начало работы без указания конкретного файла"
+            Send-Telegram "вљЎ РќР°С‡Р°Р»Рѕ СЂР°Р±РѕС‚С‹ Р±РµР· СѓРєР°Р·Р°РЅРёСЏ РєРѕРЅРєСЂРµС‚РЅРѕРіРѕ С„Р°Р№Р»Р°"
       }
       else {
-            Send-Telegram "? Файл $([System.IO.Path]::GetFileName($File))"
+            Send-Telegram "вљЎ РќРѕРІС‹Р№ С„Р°Р№Р» $([System.IO.Path]::GetFileName($File))"
       }
 }
 else {
-      # Write-Output "Режим без уведомлений в Telegram"
+      # Write-Output "Р РµР¶РёРј Р±РµР· СѓРІРµРґРѕРјР»РµРЅРёР№ РІ Telegram"
       if ($File -eq "empty") {
-            Toast "Начало работы без указания конкретного файла"
+            Toast "РќР°С‡Р°Р»Рѕ СЂР°Р±РѕС‚С‹ Р±РµР· СѓРєР°Р·Р°РЅРёСЏ РєРѕРЅРєСЂРµС‚РЅРѕРіРѕ С„Р°Р№Р»Р°"
       }
       else {
-            Toast "Началась обработка $($File)"
+            Toast "РќР°С‡Р°Р»Р°СЃСЊ РѕР±СЂР°Р±РѕС‚РєР° $($File)"
       } 
 }
 
@@ -87,7 +86,7 @@ $fileFinded = "False"
 if ($File -ne "empty") {
 
       if (-not (Test-Path $File)) {
-            Stop-Run -Msg "Такого файла не существует"
+            Stop-Run -Msg "РўР°РєРѕРіРѕ С„Р°Р№Р»Р° РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚"
       }
       $MODE = "FILE"
 
@@ -98,56 +97,56 @@ if ($File -ne "empty") {
       if ($global:videoExtensions -contains $extension) {
             if ($File -ne $FileCName) {
                         
-                  Write-Output "*", "* Копируем:", "* Из  $File` ", "* В   $FileCName"
+                  Write-Output "*", "* РљРѕРїРёСЂСѓРµРј:", "* РР·  $File` ", "* Р’   $FileCName"
             
                   try {
                         Copy-Item -Path $File -Destination $FileCName -Force  -ErrorAction SilentlyContinue
                         
                   }
                   catch {
-                        Stop-Run -Msg "Возникла ошибка при копировании файла."
+                        Stop-Run -Msg "Р’РѕР·РЅРёРєР»Р° РѕС€РёР±РєР° РїСЂРё РєРѕРїРёСЂРѕРІР°РЅРёРё С„Р°Р№Р»Р°."
                   }
                   $FileInputed = $File
                   $File = $FileCName
-                  Toast "* Файл успешно скопирован."
+                  Toast "* Р¤Р°Р№Р» СѓСЃРїРµС€РЅРѕ СЃРєРѕРїРёСЂРѕРІР°РЅ."
                   Write-Output "*", "************************************"
             
             }
-            Write-Output "* Рабочий файл: $($File)"
+            Write-Output "* Р Р°Р±РѕС‡РёР№ С„Р°Р№Р»: $($File)"
             $fileFinded = $True
       }
       else {
-            Write-Warning "* $($File) не является видео"
+            Write-Warning "* $($File) РЅРµ СЏРІР»СЏРµС‚СЃСЏ РІРёРґРµРѕ"
             return
       }
 }
 else {
       $MODE = "FOLDER"
-      Write-Output ("* Поиск видеофайлов в папке $($global:Folders["input"])")
+      Write-Output ("* РџРѕРёСЃРє РІРёРґРµРѕС„Р°Р№Р»РѕРІ РІ РїР°РїРєРµ $($global:Folders["input"])")
 
-      # Получение всех видео файлов в папке и ее подпапках
+      # РџРѕР»СѓС‡РµРЅРёРµ РІСЃРµС… РІРёРґРµРѕ С„Р°Р№Р»РѕРІ РІ РїР°РїРєРµ Рё РµРµ РїРѕРґРїР°РїРєР°С…
       $videoFiles = Get-ChildItem -Path $global:Folders["input"] -File -Recurse |
       Where-Object { $_.Extension -in $global:videoExtensions }
       
       if ($videoFiles.Count -gt 0) {
-            # Сортировка видео файлов по дате последнего изменения в обратном порядке
+            # РЎРѕСЂС‚РёСЂРѕРІРєР° РІРёРґРµРѕ С„Р°Р№Р»РѕРІ РїРѕ РґР°С‚Рµ РїРѕСЃР»РµРґРЅРµРіРѕ РёР·РјРµРЅРµРЅРёСЏ РІ РѕР±СЂР°С‚РЅРѕРј РїРѕСЂСЏРґРєРµ
             $sortedVideoFiles = $videoFiles | Sort-Object -Property LastWriteTime -Descending
       
-            # Выбор первого видео файла из отсортированного списка (последнего файла)
+            # Р’С‹Р±РѕСЂ РїРµСЂРІРѕРіРѕ РІРёРґРµРѕ С„Р°Р№Р»Р° РёР· РѕС‚СЃРѕСЂС‚РёСЂРѕРІР°РЅРЅРѕРіРѕ СЃРїРёСЃРєР° (РїРѕСЃР»РµРґРЅРµРіРѕ С„Р°Р№Р»Р°)
             $lastVideoFile = $sortedVideoFiles | Select-Object -First 1
       
             # $lastVideoFileName = $lastVideoFile.Name
       
             $File = $lastVideoFile.FullName
-            # Вывод информации о последнем видео файле
-            Write-Output "* Рабочий файл: $File" 
+            # Р’С‹РІРѕРґ РёРЅС„РѕСЂРјР°С†РёРё Рѕ РїРѕСЃР»РµРґРЅРµРј РІРёРґРµРѕ С„Р°Р№Р»Рµ
+            Write-Output "* Р Р°Р±РѕС‡РёР№ С„Р°Р№Р»: $File" 
 
             $fileFinded = $True
             # $CONSOLEADD = -join (" -File ", "$($($lastVideoFile.FullName))")
             # $CONSOLEADD
       }
       else {
-            Stop-Run -Msg "Видео файлы не найдены в указанной папке"
+            Stop-Run -Msg "Р’РёРґРµРѕ С„Р°Р№Р»С‹ РЅРµ РЅР°Р№РґРµРЅС‹ РІ СѓРєР°Р·Р°РЅРЅРѕР№ РїР°РїРєРµ"
             return
       }
 }
@@ -155,15 +154,15 @@ else {
 if ($fileFinded) {
       
       if ($Notify -eq "True") {
-            Send-Telegram "?? Обнаружен файл $([System.IO.Path]::GetFileName($File))"    
+            Send-Telegram "вљЎ РћР±РЅР°СЂСѓР¶РµРЅ С„Р°Р№Р» $([System.IO.Path]::GetFileName($File))"    
       }
       
-      # Преобразование времени задержки в секунды
+      # РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ РІСЂРµРјРµРЅРё Р·Р°РґРµСЂР¶РєРё РІ СЃРµРєСѓРЅРґС‹
       $WAIT_Seconds = ($AddHour * 60 + $AddMin) * 60
 
       if ($WAIT_Seconds -gt 0) {
             $endTime = $(Get-Date).AddSeconds($WAIT_Seconds) 
-            $tms = "?? Обработка $([System.IO.Path]::GetFileName($File)) будет продолжена $($endTime)."
+            $tms = "рџ• РћР±СЂР°Р±РѕС‚РєР° $([System.IO.Path]::GetFileName($File)) Р±СѓРґРµС‚ РїСЂРѕРґРѕР»Р¶РµРЅР° $($endTime)."
             if ($Notify) {
                   Send-Telegram $tms
             }
@@ -173,53 +172,53 @@ if ($fileFinded) {
             Start-Sleep -Seconds $WAIT_Seconds
       }
 
-      # УСТАНАВЛИВАЕМ ЛОГОТИП
+      # РЈРЎРўРђРќРђР’Р›РР’РђР•Рњ Р›РћР“РћРўРРџ
       if (($AddLogo -eq "True") -or ($Convert -eq "True")) {
-            Write-Output "************************************", "*", "* Рабочий файл является видео.", "* Накладываем логотип."
+            Write-Output "************************************", "*", "* Р Р°Р±РѕС‡РёР№ С„Р°Р№Р» СЏРІР»СЏРµС‚СЃСЏ РІРёРґРµРѕ.", "* РќР°РєР»Р°РґС‹РІР°РµРј Р»РѕРіРѕС‚РёРї."
             
             
             $fileName = [System.IO.Path]::GetFileNameWithoutExtension($File)
             $fileExtension = [System.IO.Path]::GetExtension($File)
-            # Создаем полный путь к целевому файлу
+            # РЎРѕР·РґР°РµРј РїРѕР»РЅС‹Р№ РїСѓС‚СЊ Рє С†РµР»РµРІРѕРјСѓ С„Р°Р№Р»Сѓ
             $FileArchive = Join-Path -Path $($global:Folders_Today["success"]) -ChildPath "$fileName$fileExtension"
             $FileTo = Join-Path -Path $($global:Folders_Today["withlogo"]) -ChildPath "$fileName$fileExtension"
 
             if ($MODE -eq "FOLDER") {                  
-                  Write-Output "* ?? В режиме работы без указания аттрибута -File рабочий файл перемещается в архив."
+                  Write-Output "* рџ‘» Р’ СЂРµР¶РёРјРµ СЂР°Р±РѕС‚С‹ Р±РµР· СѓРєР°Р·Р°РЅРёСЏ Р°С‚С‚СЂРёР±СѓС‚Р° -File СЂР°Р±РѕС‡РёР№ С„Р°Р№Р» РїРµСЂРµРјРµС‰Р°РµС‚СЃСЏ РІ Р°СЂС…РёРІ."
                   try {
                         $counter = 1
                         while (Test-Path $FileArchive) {
-                              # Увеличиваем счетчик и форматируем имя файла с новым счетчиком
+                              # РЈРІРµР»РёС‡РёРІР°РµРј СЃС‡РµС‚С‡РёРє Рё С„РѕСЂРјР°С‚РёСЂСѓРµРј РёРјСЏ С„Р°Р№Р»Р° СЃ РЅРѕРІС‹Рј СЃС‡РµС‚С‡РёРєРѕРј
                               $newFileName = "{0} ({1}){2}" -f $fileName, $counter, $fileExtension
                               $FileArchive = Join-Path -Path $($global:Folders_Today["success"]) -ChildPath $newFileName
                               $counter++
                         }
 
                         Move-Item -Path $File -Destination  $FileArchive
-                        Write-Output "* $([System.IO.Path]::GetFileName($File)) перемещён в $($global:Folders_Today["success"])."
+                        Write-Output "* $([System.IO.Path]::GetFileName($File)) РїРµСЂРµРјРµС‰С‘РЅ РІ $($global:Folders_Today["success"])."
                         runMMPEG $FileArchive $FileTo $Convert $Scale
-                        Toast "* ? Проверьте файл $FileTo." -BackgroundColor White -ForegroundColor Red
+                        Toast "* рџџў РџСЂРѕРІРµСЂСЊС‚Рµ С„Р°Р№Р» $FileTo." -BackgroundColor White -ForegroundColor Red
                         $File = $FileTo
                   }
                   catch {
-                        Toast "* ?? Возникла ошибка при перемещении $([System.IO.Path]::GetFileName($File)) в архив."
+                        Toast "* рџ”ґ Р’РѕР·РЅРёРєР»Р° РѕС€РёР±РєР° РїСЂРё РїРµСЂРµРјРµС‰РµРЅРёРё $([System.IO.Path]::GetFileName($File)) РІ Р°СЂС…РёРІ."
                         Toast "* `($File`) -> `($FileArchive`)."
                         Write-Output "* $_"
                   }
             }
             else {
                   runMMPEG $File $FileTo $Convert $Scale
-                  Toast "* Проверьте файл $FileTo."
+                  Toast "* вљЎРџСЂРѕРІРµСЂСЊС‚Рµ С„Р°Р№Р» $FileTo."
                   $File = $FileTo
             }
 
             if ($Notify -eq "True") {
-                  Send-Telegram "?? Наложен логотип на $File." 
+                  Send-Telegram "рџџў РќР°Р»РѕР¶РµРЅ Р»РѕРіРѕС‚РёРї РЅР° $File." 
             }
             Write-Output "*", "************************************"
       }
       else {
-            Write-Output ("* ?? Для установки логотипа добавьте параметр `"-AddLogo `$True`" в запрос.")
+            Write-Output ("* вљЎ Р”Р»СЏ СѓСЃС‚Р°РЅРѕРІРєРё Р»РѕРіРѕС‚РёРїР° РґРѕР±Р°РІСЊС‚Рµ РїР°СЂР°РјРµС‚СЂ `"-AddLogo `$True`" РІ Р·Р°РїСЂРѕСЃ.")
       }
 
       if ($SocialSend -eq "True") {
@@ -234,7 +233,7 @@ if ($fileFinded) {
 
                   Write-Output "* Folder_Work: $Folder_Work"
                   $SocialNetworksFiles = @{
-                        "ВКонтакте" = "vk"
+                        "Р’РљРѕРЅС‚Р°РєС‚Рµ" = "vk"
                         "YouTube"   = "youtube"
                         #"Telegram" = "telegram"
                         "OK" = "okru"
@@ -243,14 +242,18 @@ if ($fileFinded) {
                   $command = "D:"
                   Invoke-Expression $command
                   $NodeJSFolder = Join-Path -Path $global:Folder_Work -ChildPath "core\nodejs"
-                  $command = "cd $NodeJSFolder"
+                  $command = "cd $NodeJSFolder\app"
                   Invoke-Expression $command
 
                   # $command = "& npm update"
                   # Invoke-Expression $command
 
+                  $command = "cd $NodeJSFolder"
+                  Invoke-Expression $command
+
+
                   foreach ($key in $SocialNetworksFiles.Keys) {
-                        Write-Output " ", "* Запуск модуля $key..."
+                        Write-Output " ", "* рџЋ± Р—Р°РїСѓСЃРє РјРѕРґСѓР»СЏ $key..."
                         $scriptPath = Escape-VariableValue -Value "$($global:Folder_Work)\core\nodejs\$($SocialNetworksFiles[$key]).js"
                         $command = "& $nodeExePath $scriptPath $videoFile $Folder_Work"
                         Invoke-Expression $command
@@ -261,23 +264,23 @@ if ($fileFinded) {
                   Invoke-Expression $command
             }
             else {
-                  Stop-Run -Msg "?? NodeJS не обнаружен. Установите или проверьте путь к node.exe в файле Config.json (переменная `"NodeJSPath`")"
+                  Stop-Run -Msg "рџ”ґ NodeJS РЅРµ РѕР±РЅР°СЂСѓР¶РµРЅ. РЈСЃС‚Р°РЅРѕРІРёС‚Рµ РёР»Рё РїСЂРѕРІРµСЂСЊС‚Рµ РїСѓС‚СЊ Рє node.exe РІ С„Р°Р№Р»Рµ Config.json (РїРµСЂРµРјРµРЅРЅР°СЏ `"NodeJSPath`")"
             }             
       } else {
-            Write-Output ("* Для отправки в социальные сети добавьте параметр `"-SocialSend `$True`" в запрос.")
+            Write-Output ("* Р”Р»СЏ РѕС‚РїСЂР°РІРєРё РІ СЃРѕС†РёР°Р»СЊРЅС‹Рµ СЃРµС‚Рё РґРѕР±Р°РІСЊС‚Рµ РїР°СЂР°РјРµС‚СЂ `"-SocialSend `$True`" РІ Р·Р°РїСЂРѕСЃ.")
       }
 
       if ($Remove -eq "True") {
 
             $fileName = [System.IO.Path]::GetFileNameWithoutExtension($File)
             $fileExtension = [System.IO.Path]::GetExtension($File)
-            # Создаем полный путь к целевому файлу
+            # РЎРѕР·РґР°РµРј РїРѕР»РЅС‹Р№ РїСѓС‚СЊ Рє С†РµР»РµРІРѕРјСѓ С„Р°Р№Р»Сѓ
             $FileArchive = Join-Path -Path $($global:Folders["success"]) -ChildPath "$fileName$fileExtension"
 
             try {
                   $counter = 1
                   while (Test-Path $FileArchive) {
-                        # Увеличиваем счетчик и форматируем имя файла с новым счетчиком
+                        # РЈРІРµР»РёС‡РёРІР°РµРј СЃС‡РµС‚С‡РёРє Рё С„РѕСЂРјР°С‚РёСЂСѓРµРј РёРјСЏ С„Р°Р№Р»Р° СЃ РЅРѕРІС‹Рј СЃС‡РµС‚С‡РёРєРѕРј
                         $newFileName = "{0} ({1}){2}" -f $fileName, $counter, $fileExtension
                         $FileArchive = Join-Path -Path $($global:Folders["success"]) -ChildPath $newFileName
                         $counter++
@@ -285,11 +288,11 @@ if ($fileFinded) {
 
                   Move-Item -Path $File -Destination  $FileArchive
                   Remove-Item $FileInputed
-                  Toast "* $([System.IO.Path]::GetFileName($File)) перемещён в $($global:Folders["success"])."
+                  Toast "* $([System.IO.Path]::GetFileName($File)) РїРµСЂРµРјРµС‰С‘РЅ РІ $($global:Folders["success"])."
                  
             }
             catch {
-                  Toast "* ?? Возникла ошибка при перемещении $([System.IO.Path]::GetFileName($File)) в архив."
+                  Toast "* рџ”ґ Р’РѕР·РЅРёРєР»Р° РѕС€РёР±РєР° РїСЂРё РїРµСЂРµРјРµС‰РµРЅРёРё $([System.IO.Path]::GetFileName($File)) РІ Р°СЂС…РёРІ."
                   Toast "* `($File`) -> `($FileArchive`)."
                   Write-Output "* $_"
             }
@@ -309,26 +312,26 @@ if ($fileFinded) {
             
             
             $form = New-Object System.Windows.Forms.Form
-            $form.Text = "Подтверждение"
+            $form.Text = "РџРѕРґС‚РІРµСЂР¶РґРµРЅРёРµ"
             $form.Size = New-Object System.Drawing.Size(600, 125)
             $form.StartPosition = "CenterScreen"
             $form.TopMost = $true
 
             $label = New-Object System.Windows.Forms.Label
-            $label.Text = "Скрытая задача по публикации выполнена. Через $mins минут компьютер перейдёт в спящий режим в $ht."
+            $label.Text = "РЎРєСЂС‹С‚Р°СЏ Р·Р°РґР°С‡Р° РїРѕ РїСѓР±Р»РёРєР°С†РёРё РІС‹РїРѕР»РЅРµРЅР°. Р§РµСЂРµР· $mins РјРёРЅСѓС‚ РєРѕРјРїСЊСЋС‚РµСЂ РїРµСЂРµР№РґС‘С‚ РІ СЃРїСЏС‰РёР№ СЂРµР¶РёРј РІ $ht."
             $label.AutoSize = $true
             $label.Location = New-Object System.Drawing.Point(10, 10)
             $form.Controls.Add($label)
             
             $yesButton = New-Object System.Windows.Forms.Button
-            $yesButton.Text = "Блокировать сейчас"
+            $yesButton.Text = "Р‘Р»РѕРєРёСЂРѕРІР°С‚СЊ СЃРµР№С‡Р°СЃ"
             $yesButton.Location = New-Object System.Drawing.Point(10, 50)
             $yesButton.Size = New-Object System.Drawing.Size(150, 23)
             $yesButton.DialogResult = "Yes"
             $form.Controls.Add($yesButton)
             
             $noButton = New-Object System.Windows.Forms.Button
-            $noButton.Text = "Не блокировать"
+            $noButton.Text = "РќРµ Р±Р»РѕРєРёСЂРѕРІР°С‚СЊ"
             $noButton.Location = New-Object System.Drawing.Point(175, 50)
             $noButton.Size = New-Object System.Drawing.Size(100, 23)
             $noButton.DialogResult = "No"
@@ -353,18 +356,18 @@ if ($fileFinded) {
             
             
             if ($result -eq "Yes") {
-                  Write-Output ("выбрано ДА")
+                  Write-Output ("РІС‹Р±СЂР°РЅРѕ Р”Рђ")
                   shutdown /h
                   Exit 0
             }
             else {
-                  Write-Output ("выбрано НЕТ")
+                  Write-Output ("РІС‹Р±СЂР°РЅРѕ РќР•Рў")
             }
             
       }
 }
 
-Write-Output "* Работа завершена.", "************************************"
-Start-Sleep -Seconds 1200
+Write-Output "* Р Р°Р±РѕС‚Р° Р·Р°РІРµСЂС€РµРЅР°.", "************************************"
+# Start-Sleep -Seconds 1200
 # Environment.Exit(0)
 Exit 0
