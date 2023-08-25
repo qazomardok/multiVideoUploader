@@ -5,10 +5,10 @@ function Stop-Run {
         [string]$Msg = " "
     )
     if ($Msg -ne "") {
-        Toast "* !$($Msg)!"    
-    } 
-    
-    Write-Output "* Работа завершена.", "************************************" 
+        Toast "* !$($Msg)!"
+    }
+
+    Write-Output "* Работа завершена.", "************************************"
     Exit 0
 }
 
@@ -19,13 +19,13 @@ function Get-Config {
     )
 
     $Config_File = "$FilePath\core\Config.json"
-   
+
     if (!(Test-Path $Config_File)) {
         # Создание пустого конфигурационного файла
         Update-Config $Config_File
     }
-   
-    $Config = Get-Content -Path $Config_File -Raw | ConvertFrom-Json 
+
+    $Config = Get-Content -Path $Config_File -Raw | ConvertFrom-Json
     return $Config
 }
 
@@ -36,13 +36,13 @@ function Get-Access {
     )
 
     $Config_File = "$FilePath\core\Access.json"
-   
+
     if (!(Test-Path $Config_File)) {
         # Создание пустого конфигурационного файла
         Update-Access $Config_File
     }
-   
-    $Config = Get-Content -Path $Config_File -Raw | ConvertFrom-Json 
+
+    $Config = Get-Content -Path $Config_File -Raw | ConvertFrom-Json
     return $Config
 }
 
@@ -63,7 +63,7 @@ Function Update-Config {
             "WebServerAddress" = "http://localhost"
         }
     )
-   
+
     $NewVars | ConvertTo-Json | Out-File -FilePath $Config_File
 
 
@@ -81,9 +81,9 @@ Function Update-Access {
         [Parameter(Mandatory = $true)]
         [string]$Access_File,
         [array]$NewVars = @{
-            
+
             "Telegram" = @{
-                
+
                 "Token"         = ""
                 "ChatID"        = ""
                 "ChatIDPublish" = ""
@@ -106,7 +106,7 @@ Function Update-Access {
             }
         }
     )
-   
+
     $NewVars | ConvertTo-Json | Out-File -FilePath $Access_File
 
 
@@ -117,11 +117,10 @@ Function Update-Access {
     # return Get-Config -FilePath $global:Folder_Work
 }
 
-
 function Toast {
-    
+
     Param([Parameter(Mandatory = $true)][String]$Message)
-    
+
     Write-Output $Message
     $notify = new-object system.windows.forms.notifyicon
     $notify.icon = [System.Drawing.SystemIcons]::Asterisk
@@ -136,7 +135,7 @@ Function Send-Telegram {
     Param([Parameter(Mandatory = $true)][String]$Message)
 
     Toast $Message
-    
+
     $updated = $false
 
     if ([string]::IsNullOrEmpty($global:Access)) {
@@ -144,7 +143,7 @@ Function Send-Telegram {
     }
 
     if ([string]::IsNullOrEmpty($global:Access.Telegram)) {
-        $global:Access | Add-Member -MemberType NoteProperty -Name "Telegram" -Value @{} 
+        $global:Access | Add-Member -MemberType NoteProperty -Name "Telegram" -Value @{}
         $updated = $true
     }
     if ([string]::IsNullOrEmpty($global:Access.Telegram.ChatID)) {
@@ -157,20 +156,20 @@ Function Send-Telegram {
         $global:Access.Telegram | Add-Member -MemberType NoteProperty -Name "ChatID" -Value $input_ChatIDPublish -Force
         $updated = $true
     }
-    
+
     if ([string]::IsNullOrEmpty($global:Access.Telegram.Token)) {
         $input_Token = Read-Host "Введите Token доступа к API Telegram"
         $global:Access.Telegram | Add-Member -MemberType NoteProperty -Name "Token" -Value $input_Token  -Force
         $updated = $true
     }
-    
+
     if ($updated) {
         Update-Access "$($global:Folder_Work)\core\Access.json" $global:Access
     }
 
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     if (![string]::IsNullOrEmpty($Message)) {
-        Invoke-RestMethod -Uri "https://api.telegram.org/bot$($global:Access.Telegram.Token)/sendMessage?chat_id=$($global:Access.Telegram.ChatID)&text=$($Message)"
+        $TGA = Invoke-RestMethod -Uri "https://api.telegram.org/bot$($global:Access.Telegram.Token)/sendMessage?chat_id=$($global:Access.Telegram.ChatID)&text=$($Message)"
         "* * TG уведомление отправлено: $($Message)"
     }
     else {
@@ -207,11 +206,12 @@ function runMMPEG {
     if ($OnlyConvert -eq "True") {
         $comm = "$FFMPEG_Exec -i `"$From`" -y $filter -c:v h264_amf `"$To`""
         Invoke-Expression $comm
-    } else {
-       
+    }
+    else {
+
         $comm = "& $FFMPEG_Exec -i `"$From`" -y -i `"$FFMPEG_LogoFile`" -filter_complex '[0:v]scale=$($global:Config.Scale_X):$($global:Config.Scale_Y)[scaled];[scaled][1:v]overlay=$($global:Config.Logo_X):$($global:Config.Logo_Y)[out]' -map '[out]' -map 0:a -c:v h264_amf `"$To`" -hide_banner"
         Invoke-Expression $comm
-        
+
     }
 
     Write-Output $comm

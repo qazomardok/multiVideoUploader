@@ -1,7 +1,6 @@
 ﻿console.log("Starting NodeJS...");
 
 const core = require('./app/app.js');
-// const { google } = require('googleapis');
 
 let rewriteYoutubeAccess = false
 
@@ -50,8 +49,8 @@ if (!global.access.Youtube.client_id || !global.access.Youtube.client_secret) {
         const oAuth2Client = new core.google.auth.OAuth2(
             credentials.client_id,
             credentials.client_secret,
-            `${credentials.redirect_uris[0]}:${global.config.WebServerPort}`);
-
+            `${credentials.redirect_uris[0]}:${global.config.WebServerPort}`
+        );
         if (!global.access.Youtube.auth) {
             getNewToken(oAuth2Client, callback);
         } else {
@@ -123,7 +122,7 @@ if (!global.access.Youtube.client_id || !global.access.Youtube.client_secret) {
         console.log(`Отправляем ${requestData.requestBody.snippet.title} в YouTube. Ждите...`);
         youtube.videos.insert(requestData, (err, res) => {
             if (err) return console.log(`Ошибка при отправке видео: ${err}`, res);
-//https://www.youtube.com/watch?v=Hk2Bc-2YfIs&list=RDGMEMJQXQAmqrnmK1SEjY_rKBGAVMHk2Bc-2YfIs&start_radio=1
+            //https://www.youtube.com/watch?v=Hk2Bc-2YfIs&list=RDGMEMJQXQAmqrnmK1SEjY_rKBGAVMHk2Bc-2YfIs&start_radio=1
             let link = `https://www.youtube.com/watch?v=${res.data.id}`
             // let link = `https://studio.youtube.com/video/${res.data.id}/edit`
             let msg = `📺 Видео "${requestData.requestBody.snippet.title}" загружено в YouTube: ${link}`
@@ -142,4 +141,3 @@ if (!global.access.Youtube.client_id || !global.access.Youtube.client_secret) {
     }
 
 }
-

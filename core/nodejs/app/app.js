@@ -8,7 +8,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const opn = require('opn');
 const readline = require('readline-sync');
-const googleapis = require('googleapis');
+const { google } = require('googleapis');
+
 function vars() {
     let vars = process.argv; // будет выведено значение "paramValue"
 
@@ -50,28 +51,28 @@ function getTitle() {
     let TitleA = path.basename(global.vars.file).replace(fileExtension, "").toLowerCase().split(" ");
     let newTitleR = "";
     PlayListID = 0;
-    Title = TitleA[0]; 
+    Title = TitleA[0];
 
     newTitleR = require(global.vars.workFolder + '\\core\\nodejs\\app\\title.js');
 
     delete (TitleA[0]);
-if(newTitleR !== "") {
-    let filteredArr = TitleA.filter(elem => elem !== null && elem !== "" && elem !== undefined);
+    if (newTitleR !== "") {
+        let filteredArr = TitleA.filter(elem => elem !== null && elem !== "" && elem !== undefined);
 
-    if (filteredArr.length > 0) {
-        filteredArr.forEach(function (element) {
-            if (/\d/.test(element)) {
-                newTitleR += " (" + element + ")";
-            } else {
-                // process.exit(0);
-                newTitleR += " " + element.toLowerCase();
-            }
-        });
+        if (filteredArr.length > 0) {
+            filteredArr.forEach(function (element) {
+                if (/\d/.test(element)) {
+                    newTitleR += " (" + element + ")";
+                } else {
+                    // process.exit(0);
+                    newTitleR += " " + element.toLowerCase();
+                }
+            });
+        }
+    } else {
+        newTitleR = path.basename(global.vars.file, fileExtension);
+
     }
-} else {
-    newTitleR = path.basename(global.vars.file, fileExtension);
-    
-}
     out = {
         "newTitleExt": newTitleR + fileExtension,
         "newTitle": newTitleR,
@@ -101,5 +102,5 @@ module.exports = {
     opn: opn,
     newTitle: getTitle,
     url: url,
-    googleapis: googleapis
+    google: google
 };

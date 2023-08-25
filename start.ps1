@@ -6,6 +6,14 @@
       [string]$Convert = "False",
       [string]$Scale = "True",
       [string]$SocialSend = "False",
+
+
+      [string]$SendYouTube = "False",
+      [string]$SendOK = "False",
+      [string]$SendVK = "False",
+
+
+      [string]$nmpUpdate = "False",
       [string]$Remove = "False",
       [int]$AddHour = 0,
       [int]$AddMin = 0
@@ -34,7 +42,7 @@ Write-Output "🤗 Привет!"
 #       if ($key -eq "y") { $Notify = $True } else { $Notify = "False" }
 #       if ($key -eq "н") { $Notify = $True } else { $Notify = "False" }
 # }
-  
+
 
 # if (-not $AddLogo) {
 #       Write-Host "Добавить логотип? (y/n): "
@@ -42,7 +50,7 @@ Write-Output "🤗 Привет!"
 #       if ($key -eq "y") { $AddLogo = $True } else { $AddLogo = "False" }
 #       if ($key -eq "н") { $AddLogo = $True } else { $AddLogo = "False" }
 # }
-        
+
 
 # if (-not $SocialSend) {
 #       Write-Host "Загрузить файл в VK и YouTube? (y/n): "
@@ -50,8 +58,8 @@ Write-Output "🤗 Привет!"
 #       if ($key -eq "y") { $SocialSend = $True } else { $SocialSend = "False" }
 #       if ($key -eq "н") { $SocialSend = $True } else { $SocialSend = "False" }
 # }
-              
-                        
+
+
 
 
 
@@ -74,7 +82,7 @@ else {
       }
       else {
             Toast "Началась обработка $($File)"
-      } 
+      }
 }
 
 if ($OnlyNotify -eq "True") {
@@ -91,17 +99,17 @@ if ($File -ne "empty") {
       $MODE = "FILE"
 
       $FileCName = "$($global:Folders_Today["input"])\$([System.IO.Path]::GetFileName($File))"
-      
+
       $extension = [System.IO.Path]::GetExtension($File)
 
       if ($global:videoExtensions -contains $extension) {
             if ($File -ne $FileCName) {
-                        
+
                   Write-Output "*", "* Копируем:", "* Из  $File` ", "* В   $FileCName"
-            
+
                   try {
                         Copy-Item -Path $File -Destination $FileCName -Force  -ErrorAction SilentlyContinue
-                        
+
                   }
                   catch {
                         Stop-Run -Msg "Возникла ошибка при копировании файла."
@@ -110,7 +118,7 @@ if ($File -ne "empty") {
                   $File = $FileCName
                   Toast "* Файл успешно скопирован."
                   Write-Output "*", "************************************"
-            
+
             }
             Write-Output "* Рабочий файл: $($File)"
             $fileFinded = $True
@@ -127,19 +135,19 @@ else {
       # Получение всех видео файлов в папке и ее подпапках
       $videoFiles = Get-ChildItem -Path $global:Folders["input"] -File -Recurse |
       Where-Object { $_.Extension -in $global:videoExtensions }
-      
+
       if ($videoFiles.Count -gt 0) {
             # Сортировка видео файлов по дате последнего изменения в обратном порядке
             $sortedVideoFiles = $videoFiles | Sort-Object -Property LastWriteTime -Descending
-      
+
             # Выбор первого видео файла из отсортированного списка (последнего файла)
             $lastVideoFile = $sortedVideoFiles | Select-Object -First 1
-      
+
             # $lastVideoFileName = $lastVideoFile.Name
-      
+
             $File = $lastVideoFile.FullName
             # Вывод информации о последнем видео файле
-            Write-Output "* Рабочий файл: $File" 
+            Write-Output "* Рабочий файл: $File"
 
             $fileFinded = $True
             # $CONSOLEADD = -join (" -File ", "$($($lastVideoFile.FullName))")
@@ -152,22 +160,22 @@ else {
 }
 
 if ($fileFinded) {
-      
+
       if ($Notify -eq "True") {
-            Send-Telegram "⚡ Обнаружен файл $([System.IO.Path]::GetFileName($File))"    
+            Send-Telegram "⚡ Обнаружен файл $([System.IO.Path]::GetFileName($File))"
       }
-      
+
       # Преобразование времени задержки в секунды
       $WAIT_Seconds = ($AddHour * 60 + $AddMin) * 60
 
       if ($WAIT_Seconds -gt 0) {
-            $endTime = $(Get-Date).AddSeconds($WAIT_Seconds) 
+            $endTime = $(Get-Date).AddSeconds($WAIT_Seconds)
             $tms = "🕘 Обработка $([System.IO.Path]::GetFileName($File)) будет продолжена $($endTime)."
             if ($Notify) {
                   Send-Telegram $tms
             }
             else {
-                  Write-Output $tms  
+                  Write-Output $tms
             }
             Start-Sleep -Seconds $WAIT_Seconds
       }
@@ -175,15 +183,15 @@ if ($fileFinded) {
       # УСТАНАВЛИВАЕМ ЛОГОТИП
       if (($AddLogo -eq "True") -or ($Convert -eq "True")) {
             Write-Output "************************************", "*", "* Рабочий файл является видео.", "* Накладываем логотип."
-            
-            
+
+
             $fileName = [System.IO.Path]::GetFileNameWithoutExtension($File)
             $fileExtension = [System.IO.Path]::GetExtension($File)
             # Создаем полный путь к целевому файлу
             $FileArchive = Join-Path -Path $($global:Folders_Today["success"]) -ChildPath "$fileName$fileExtension"
             $FileTo = Join-Path -Path $($global:Folders_Today["withlogo"]) -ChildPath "$fileName$fileExtension"
 
-            if ($MODE -eq "FOLDER") {                  
+            if ($MODE -eq "FOLDER") {
                   Write-Output "* 👻 В режиме работы без указания аттрибута -File рабочий файл перемещается в архив."
                   try {
                         $counter = 1
@@ -213,41 +221,43 @@ if ($fileFinded) {
             }
 
             if ($Notify -eq "True") {
-                  Send-Telegram "🟢 Наложен логотип на $File." 
+                  Send-Telegram "🟢 Наложен логотип на $File."
             }
             Write-Output "*", "************************************"
       }
       else {
             Write-Output ("* ⚡ Для установки логотипа добавьте параметр `"-AddLogo `$True`" в запрос.")
       }
-
       if ($SocialSend -eq "True") {
-            
+
+
 
             if (($null -ne $global:Config.NodeJSPath) -and (Test-Path $global:Config.NodeJSPath)) {
 
                   $nodeExePath = Escape-VariableValue -Value $global:Config.NodeJSPath -B "`""
-                  $videoFile = Escape-VariableValue -Value $File      
+                  $videoFile = Escape-VariableValue -Value $File
                   # $Folder_Work = Escape-VariableValue -Value $($global:Folder_Work)
 
 
                   Write-Output "* Folder_Work: $Folder_Work"
                   $SocialNetworksFiles = @{
-                        "ВКонтакте" = "vk"
-                        "YouTube"   = "youtube"
+                        # "ВКонтакте" = "vk"
+                        "YouTube" = "youtube"
                         #"Telegram" = "telegram"
-                        "OK" = "okru"
+                        # "OK"        = "okru"
                   }
 
                   $command = "D:"
                   Invoke-Expression $command
                   $NodeJSFolder = Join-Path -Path $global:Folder_Work -ChildPath "core\nodejs"
-                  $command = "cd $NodeJSFolder\app"
-                  Invoke-Expression $command
 
-                  # $command = "& npm update"
-                  # Invoke-Expression $command
+                  if ($nmpUpdate -eq "True") {
+                        $command = "cd $NodeJSFolder\app"
+                        Invoke-Expression $command
 
+                        $command = "& npm update"
+                        Invoke-Expression $command
+                  }
                   $command = "cd $NodeJSFolder"
                   Invoke-Expression $command
 
@@ -260,13 +270,14 @@ if ($fileFinded) {
                         Write-Output " "
                   }
 
-                  $command = "cd $($global:Folder_Work)" 
+                  $command = "cd $($global:Folder_Work)"
                   Invoke-Expression $command
             }
             else {
                   Stop-Run -Msg "🔴 NodeJS не обнаружен. Установите или проверьте путь к node.exe в файле Config.json (переменная `"NodeJSPath`")"
-            }             
-      } else {
+            }
+      }
+      else {
             Write-Output ("* Для отправки в социальные сети добавьте параметр `"-SocialSend `$True`" в запрос.")
       }
 
@@ -289,7 +300,7 @@ if ($fileFinded) {
                   Move-Item -Path $File -Destination  $FileArchive
                   Remove-Item $FileInputed
                   Toast "* $([System.IO.Path]::GetFileName($File)) перемещён в $($global:Folders["success"])."
-                 
+
             }
             catch {
                   Toast "* 🔴 Возникла ошибка при перемещении $([System.IO.Path]::GetFileName($File)) в архив."
@@ -305,12 +316,12 @@ if ($fileFinded) {
             $mss = 900000;
             [int] $mins = $mss / 60 / 1000
             $timespan = New-TimeSpan -Seconds ($mss / 1000)
-            
+
             $newTime = (Get-Date) + $timespan
             $ht = $newTime.ToString("HH:mm")
-             
-            
-            
+
+
+
             $form = New-Object System.Windows.Forms.Form
             $form.Text = "Подтверждение"
             $form.Size = New-Object System.Drawing.Size(600, 125)
@@ -322,39 +333,39 @@ if ($fileFinded) {
             $label.AutoSize = $true
             $label.Location = New-Object System.Drawing.Point(10, 10)
             $form.Controls.Add($label)
-            
+
             $yesButton = New-Object System.Windows.Forms.Button
             $yesButton.Text = "Блокировать сейчас"
             $yesButton.Location = New-Object System.Drawing.Point(10, 50)
             $yesButton.Size = New-Object System.Drawing.Size(150, 23)
             $yesButton.DialogResult = "Yes"
             $form.Controls.Add($yesButton)
-            
+
             $noButton = New-Object System.Windows.Forms.Button
             $noButton.Text = "Не блокировать"
             $noButton.Location = New-Object System.Drawing.Point(175, 50)
             $noButton.Size = New-Object System.Drawing.Size(100, 23)
             $noButton.DialogResult = "No"
             $form.Controls.Add($noButton)
-            
+
             $form.AcceptButton = $yesButton
             $form.CancelButton = $noButton
-            
+
             $timer = New-Object System.Windows.Forms.Timer
-            $timer.Interval = $mss  
+            $timer.Interval = $mss
             $timer.Add_Tick({
                         $form.DialogResult = "Yes"
                         $form.Close()
                   })
             $timer.Start()
-            
+
             $result = $form.ShowDialog()
-            
+
             $timer.Stop()
-            
+
             $timer.Dispose()
-            
-            
+
+
             if ($result -eq "Yes") {
                   Write-Output ("выбрано ДА")
                   shutdown /h
@@ -363,7 +374,7 @@ if ($fileFinded) {
             else {
                   Write-Output ("выбрано НЕТ")
             }
-            
+
       }
 }
 

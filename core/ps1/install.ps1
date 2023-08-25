@@ -17,7 +17,7 @@ else {
     Write-Host "Скачивание и установка ffmpeg.exe..."
 
     $ffmpegFolderPathTemp = Join-Path -Path $global:Folder_Work -ChildPath "core\ffmpeg\tmp"
-    
+
     # Создаем папку tmp, если она отсутствует
     if (-not (Test-Path -Path $ffmpegFolderPathTemp -PathType Container)) {
         New-Item -Path $ffmpegFolderPathTemp -ItemType Directory | Out-Null
@@ -25,7 +25,7 @@ else {
 
     $zipFilePath = Join-Path -Path $ffmpegFolderPathTemp -ChildPath "ffmpeg.zip"
     $ffmpegDownloadUrl = $global:Config.ffmpegDownloadUrl
-    
+
     Invoke-WebRequest -Uri $ffmpegDownloadUrl -OutFile $zipFilePath
     Expand-Archive -Path $zipFilePath -DestinationPath $ffmpegFolderPathTemp
 
@@ -34,12 +34,9 @@ else {
 
     # Remove-Item -Path $zipFilePath -Force
     Remove-Item -Path $ffmpegFolderPathTemp -Force -Recurse
-    
+
     Write-Host "FFmpeg.exe успешно скачан и сохранен в $ffmpegFilePath"
 }
-
-
-
 
 
 
@@ -61,14 +58,14 @@ else {
 
     $folderMonitorDownloadUrl = "https://www.nodesoft.com/foldermonitor/download"
     $zipFilePath = Join-Path -Path $folderMonitorFolderPath -ChildPath "FolderMonitor.zip"
-    
+
     Invoke-WebRequest -Uri $folderMonitorDownloadUrl -OutFile $zipFilePath
 
     Expand-Archive -Path $zipFilePath -DestinationPath $folderMonitorFolderPath -Force
 
     # Удаляем архив
     Remove-Item -Path $zipFilePath -Force
-    
+
     Write-Host "FolderMonitor.exe успешно установлен в $folderMonitorFolderPath"
 }
 
@@ -78,13 +75,41 @@ $folderMonitorXmlPath = Join-Path -Path $localAppDataPath -ChildPath "NodeSoft\F
 
 if (Test-Path -Path $folderMonitorXmlPath -PathType Leaf) {
     if (-not $global:Config.FolderMonitorXML) {
-        
+
         $global:Config | Add-Member -MemberType NoteProperty -Name "FolderMonitorXML" -Value $folderMonitorXmlPath -Force
         Update-Config "$($global:Folder_Work)\core\Config.json" $global:Config
         Write-Host "Файл FolderMonitor.xml найден и путь обновлен в конфигурационном файле $folderMonitorXmlPath."
-    } else {
+    }
+    else {
         Write-Host "Ключ 'FolderMonitorXML' уже существует в объекте Config."
     }
-} else {
+}
+else {
     Write-Host "Файл FolderMonitor.xml не найден по пути: $folderMonitorXmlPath"
+}
+
+
+
+if (-not (Test-Path $global:Folder_Files)) {
+    New-Item -ItemType Directory -Path $global:Folder_Files | Out-Null
+}
+
+
+foreach ($key in $global:Folders_Original.Keys) {
+
+    $Folder_TMP = (Join-Path -Path $global:Folder_Files -ChildPath  $global:Folders_Original[$key])
+
+    if (-not (Test-Path $Folder_TMP)) {
+        New-Item -ItemType Directory -Path $Folder_TMP | Out-Null
+    }
+
+    $global:Folders[$key] = $Folder_TMP
+
+    if (-not (Test-Path (Join-Path -Path $Folder_TMP -ChildPath $global:Folder_Today_Prefix))) {
+        New-Item -ItemType Directory -Path (Join-Path -Path $Folder_TMP -ChildPath $global:Folder_Today_Prefix) | Out-Null
+    }
+
+    $global:Folders_Today[$key] = Convert-Path -Path (Resolve-Path (Join-Path -Path $Folder_TMP -ChildPath $global:Folder_Today_Prefix))
+
+    Remove-Variable -Name Folder_TMP
 }
