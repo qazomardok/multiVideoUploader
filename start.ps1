@@ -19,6 +19,7 @@
       [int]$AddMin = 0
 )
 
+
 # $SocialSend = "False"
 # $Notify = "False"
 [reflection.assembly]::loadwithpartialname('System.Windows.Forms')
@@ -28,12 +29,19 @@ $global:Folder_Work = $PSScriptRoot
 
 Set-Location $global:Folder_Work
 Write-Output $global:Folder_Work
+
+$file = "$($global:Folder_Work)\run.bat"
+$text = "echo Hello World!"
+New-Item -Path $file -ItemType file
+Set-Content -Path $file $text
+
+
 . .\core\ps1\functions.ps1
 . .\core\ps1\config.ps1
 . .\core\ps1\install.ps1
 
 # [System.Text.Encoding]::UTF8
-Clear-Host
+# Clear-Host
 
 Write-Output "🤗 Привет!"
 # if (-not $Notify) {
@@ -241,10 +249,10 @@ if ($fileFinded) {
 
                   Write-Output "* Folder_Work: $Folder_Work"
                   $SocialNetworksFiles = @{
-                        # "ВКонтакте" = "vk"
-                        "YouTube" = "youtube"
+                        "ВКонтакте" = "vk"
+                        "YouTube"   = "youtube"
                         #"Telegram" = "telegram"
-                        # "OK"        = "okru"
+                        "OK"        = "okru"
                   }
 
                   $command = "D:"

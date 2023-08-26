@@ -99,7 +99,7 @@ Function Update-Access {
                 "oksecret"             = ""
                 "okaccessToken"        = ""
                 "oksession_secret_key" = ""
-                "okscope"              = ""
+                "okscope"              = "VALUABLE_ACCESS;LONG_ACCESS_TOKEN" #todo исправить
                 "groupID"              = ""
             }
             "Youtube"  = @{
@@ -170,6 +170,7 @@ Function Send-Telegram {
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     if (![string]::IsNullOrEmpty($Message)) {
         $TGA = Invoke-RestMethod -Uri "https://api.telegram.org/bot$($global:Access.Telegram.Token)/sendMessage?chat_id=$($global:Access.Telegram.ChatID)&text=$($Message)"
+
         "* * TG уведомление отправлено: $($Message)"
     }
     else {

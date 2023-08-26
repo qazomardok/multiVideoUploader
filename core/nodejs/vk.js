@@ -1,8 +1,6 @@
 ﻿console.log("Starting NodeJS...");
-
-const { exit } = require('process');
 const core = require('./app/app.js');
-exit
+
 let rewriteVKAccess = false
 
 if (!global.access.VK) {
@@ -131,7 +129,7 @@ function runVKupload() {
             },
             json: true,
         };
-        
+
         let dat = {
             group_id: global.access.VK.Group_ID,
             access_token: global.access.VK.access_token,
