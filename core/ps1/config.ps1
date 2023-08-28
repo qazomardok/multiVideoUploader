@@ -1,4 +1,4 @@
-
+п»ї
 
 $global:Config = Get-Config -FilePath $global:Folder_Work
 $global:Access = Get-Access -FilePath $global:Folder_Work
@@ -8,7 +8,7 @@ if ([string]::IsNullOrEmpty($global:Config.FolderFiles)) {
     if (-not (Test-Path $folderFilesPath)) {
         New-Item -Path $folderFilesPath -ItemType Directory | Out-Null
     }
-        
+
     $global:Folder_Files = Convert-Path -Path (Resolve-Path $folderFilesPath)
     $global:Config | Add-Member -MemberType NoteProperty -Name "FolderFiles" -Value $global:Folder_Files -Force
     Update-Config "$($global:Folder_Work)\core\Config.json" $global:Config
@@ -24,11 +24,11 @@ if (-not (Test-Path $global:Folder_Files)) {
 }
 
 $global:Folders_Original = @{
-    "input"   = "Исходное"
-    "cropped" = "Наложить логотип"
-    "withlogo"= "Готовое"
-    "forsend" = "Отправить в соцсети (сейчас)"
-    "success" = "Архив"
+    "input"    = "РСЃС…РѕРґРЅРѕРµ"
+    "cropped"  = "РќР°Р»РѕР¶РёС‚СЊ Р»РѕРіРѕС‚РёРї"
+    "withlogo" = "Р“РѕС‚РѕРІРѕРµ"
+    "forsend"  = "РћС‚РїСЂР°РІРёС‚СЊ РІ СЃРѕС†СЃРµС‚Рё (СЃРµР№С‡Р°СЃ)"
+    "success"  = "РђСЂС…РёРІ"
 }
 
 $global:videoExtensions = ".avi", ".mp4", ".mkv", ".mov", ".mpg"
@@ -37,9 +37,9 @@ $global:Folders_Today = @{}
 $global:Folder_Today_Prefix = Get-Date -Format "dd"
 
 foreach ($key in $global:Folders_Original.Keys) {
- 
+
     $Folder_TMP = (Join-Path -Path $global:Folder_Files -ChildPath  $global:Folders_Original[$key])
- 
+
     if (-not (Test-Path $Folder_TMP)) {
         New-Item -ItemType Directory -Path $Folder_TMP | Out-Null
     }
@@ -49,7 +49,7 @@ foreach ($key in $global:Folders_Original.Keys) {
     if (-not (Test-Path (Join-Path -Path $Folder_TMP -ChildPath $global:Folder_Today_Prefix))) {
         New-Item -ItemType Directory -Path (Join-Path -Path $Folder_TMP -ChildPath $global:Folder_Today_Prefix) | Out-Null
     }
-    
+
     $global:Folders_Today[$key] = Convert-Path -Path (Resolve-Path (Join-Path -Path $Folder_TMP -ChildPath $global:Folder_Today_Prefix))
 
     Remove-Variable -Name Folder_TMP

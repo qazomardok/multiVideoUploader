@@ -1,13 +1,13 @@
 {
-    "Scale_X":  "1280",
-    "WebServerAddress":  "http://localhost",
-    "Logo_X":  "15",
-    "Scale_Y":  "720",
-    "NodeJSPath":  "C:\\Program Files\\nodejs\\node.exe",
-    "Logo_Y":  "15",
-    "FolderFiles":  "d:\\Р’РёРґРµРѕ РґР»СЏ РїСѓР±Р»РёРєР°С†РёРё РІ РёРЅС‚РµСЂРЅРµС‚",
-    "WebServerPort":  "8081",
-    "debug":  "true",
-    "ffmpegDownloadUrl":  "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip",
-    "FolderMonitorXML":  "C:\\Users\\qazom\\AppData\\Local\\NodeSoft\\FolderMonitor\\FolderMonitor.xml"
+    "Scale_X": "1280",
+    "WebServerAddress": "http://localhost",
+    "Logo_X": "15",
+    "Scale_Y": "720",
+    "NodeJSPath": "C:\\Program Files\\nodejs\\node.exe",
+    "Logo_Y": "15",
+    "FolderFiles": "d:\\Видео для публикации в интернет",
+    "WebServerPort": "8081",
+    "debug": "true",
+    "ffmpegDownloadUrl": "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip",
+    "FolderMonitorXML": "C:\\Users\\qazom\\AppData\\Local\\NodeSoft\\FolderMonitor\\FolderMonitor.xml"
 }

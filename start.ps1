@@ -30,10 +30,10 @@ $global:Folder_Work = $PSScriptRoot
 Set-Location $global:Folder_Work
 Write-Output $global:Folder_Work
 
-$file = "$($global:Folder_Work)\run.bat"
-$text = "echo Hello World!"
-New-Item -Path $file -ItemType file
-Set-Content -Path $file $text
+$logFile = "$($global:Folder_Work)\run.bat"
+$logText = "echo Hello World!"
+New-Item -Path $logFile -ItemType file
+Set-Content -Path $logFile $logText
 
 
 . .\core\ps1\functions.ps1
