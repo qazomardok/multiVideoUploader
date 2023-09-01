@@ -2,8 +2,8 @@ newTitle = "";
 switch (Title) {
     case "вести":
         // newTitle += "Выпуск";
-        // newTitle += "АКТВ Вести";
-        newTitle += "Летние новости";
+        newTitle += "АКТВ Вести";
+        //newTitle += "Летние новости";
         vkPlayListID = 50969644;
         break;
 
@@ -12,7 +12,7 @@ switch (Title) {
         // newTitle += "АКТВ Вести";
         newTitle += "Неделя";
         vkPlayListID = 50969645;
-        break; 
+        break;
 }
 
 module.exports = newTitle
