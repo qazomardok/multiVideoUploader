@@ -16,7 +16,12 @@
       [string]$nmpUpdate = "False",
       [string]$Remove = "False",
       [int]$AddHour = 0,
-      [int]$AddMin = 0
+      [int]$AddMin = 0,
+
+
+      [string]$Text = "",
+      [string]$Rename = ""
+
 )
 
 
@@ -273,7 +278,7 @@ if ($fileFinded) {
                   foreach ($key in $SocialNetworksFiles.Keys) {
                         Write-Output " ", "* 🎱 Запуск модуля $key..."
                         $scriptPath = Escape-VariableValue -Value "$($global:Folder_Work)\core\nodejs\$($SocialNetworksFiles[$key]).js"
-                        $command = "& $nodeExePath $scriptPath $videoFile $Folder_Work"
+                        $command = "& $nodeExePath $scriptPath $videoFile $Folder_Work $Text"
                         Invoke-Expression $command
                         Write-Output " "
                   }
@@ -317,7 +322,7 @@ if ($fileFinded) {
             }
       }
 
-      if ((Get-Date).DayOfWeek -eq 'Saturday') {
+      if ((Get-Date).DayOfWeek -ne 'Sunday') {
          $WAIT_Seconds = 0
       }
 

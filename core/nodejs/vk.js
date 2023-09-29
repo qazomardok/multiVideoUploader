@@ -137,9 +137,11 @@ function runVKupload() {
             owner_id: global.access.VK.user_id,
             name: Title.newTitle,
             album_id: Title.vkPlayListID,
-            description: '',
+            description: global.vars.description,
+            wallpost: (global.vars.description === "") ? 0 : 1,
             v: 5.95
         };
+
 
         core.request.post(video_upload_options, function (error, response, body) {
             const video_save_options = {

@@ -15,7 +15,8 @@ function vars() {
 
     let outvars = {
         "file": path.normalize(vars[2]),
-        "workFolder": path.normalize(vars[3])
+        "workFolder": path.normalize(vars[3]),
+        "description": path.normalize(vars[4] || "")
     }
     return outvars
 }
