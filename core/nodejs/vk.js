@@ -41,7 +41,7 @@ if (rewriteVKAccess === true) {
         method: "authorize",
         query: {
             client_id: global.access.VK.AppID,
-            scope: "video,offline",
+            scope: "video,offline,wall",
             client_secret: global.access.VK.Appclient_secret,
             redirect_uri: `${global.config.WebServerAddress}:${global.config.WebServerPort}`,
             expires_in: 0,
@@ -112,6 +112,7 @@ function runVKupload() {
             access_token: global.access.VK.access_token,
             name: Title.newTitle,
             album_id: Title.vkPlayListID,
+           // wallpost: (global.vars.description === "") ? 0 : 1,
             v: 5.95
         },
         json: true,
@@ -138,10 +139,9 @@ function runVKupload() {
             name: Title.newTitle,
             album_id: Title.vkPlayListID,
             description: global.vars.description,
-            wallpost: (global.vars.description === "") ? 0 : 1,
+        //    wallpost: (global.vars.description === "") ? 0 : 1,
             v: 5.95
         };
-
 
         core.request.post(video_upload_options, function (error, response, body) {
             const video_save_options = {
@@ -149,17 +149,24 @@ function runVKupload() {
                 qs: dat,
                 json: true,
             };
+
+
             core.request.get(video_save_options, function (error, response, body) {
+               // console.log("!!!!!!", error, response, body);
                 let link = `https://vk.com/video${body.response.owner_id}_${body.response.video_id}`
                 let msg = `📺 Видео "${Title.newTitle}" загружено в ВК: ${link}`
                 console.log(`** ${msg}`);
                 core.telegram(msg)
             });
         }).on('error', function (err) {
-            console.error(err);
+            console.error(err, "Ошибка загрузки");
         }).on('end', function () {
             console.log('Загрузка завершена');
         });
+    }).on('error', function (err, data) {
+        console.error(err, data, "Ошибка отправки");
+    }).on('end', function () {
+        console.log('Отправка завершена');
     });
 
 }

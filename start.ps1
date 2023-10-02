@@ -32,6 +32,8 @@
 
 $global:Folder_Work = $PSScriptRoot
 
+$Text = ""
+
 Set-Location $global:Folder_Work
 Write-Output $global:Folder_Work
 
