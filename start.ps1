@@ -180,20 +180,7 @@ if ($fileFinded) {
             Send-Telegram "⚡ Обнаружен файл $([System.IO.Path]::GetFileName($File))"
       }
 
-      # Преобразование времени задержки в секунды
-      $WAIT_Seconds = ($AddHour * 60 + $AddMin) * 60
 
-      if ($WAIT_Seconds -gt 0) {
-            $endTime = $(Get-Date).AddSeconds($WAIT_Seconds)
-            $tms = "🕘 Обработка $([System.IO.Path]::GetFileName($File)) будет продолжена $($endTime)."
-            if ($Notify) {
-                  Send-Telegram $tms
-            }
-            else {
-                  Write-Output $tms
-            }
-            Start-Sleep -Seconds $WAIT_Seconds
-      }
 
       # УСТАНАВЛИВАЕМ ЛОГОТИП
       if (($AddLogo -eq "True") -or ($Convert -eq "True")) {
@@ -243,6 +230,23 @@ if ($fileFinded) {
       else {
             Write-Output ("* ⚡ Для установки логотипа добавьте параметр `"-AddLogo `$True`" в запрос.")
       }
+
+
+      # Преобразование времени задержки в секунды
+      $WAIT_Seconds = ($AddHour * 60 + $AddMin) * 60
+
+      if ($WAIT_Seconds -gt 0) {
+            $endTime = $(Get-Date).AddSeconds($WAIT_Seconds)
+            $tms = "🕘 Обработка $([System.IO.Path]::GetFileName($File)) будет продолжена $($endTime)."
+            if ($Notify) {
+                  Send-Telegram $tms
+            }
+            else {
+                  Write-Output $tms
+            }
+            Start-Sleep -Seconds $WAIT_Seconds
+      }
+
       if ($SocialSend -eq "True") {
 
 
