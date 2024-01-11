@@ -12,12 +12,14 @@ const { google } = require('googleapis');
 
 function vars() {
     let vars = process.argv; // будет выведено значение "paramValue"
-
+    // console.log("VARS:", vars);
     let outvars = {
         "file": path.normalize(vars[2]),
         "workFolder": path.normalize(vars[3]),
-        "description": path.normalize(vars[4] || "")
+        "description": path.normalize(vars[4] || ""),
+        "add": vars[5] || ""
     }
+    // console.log("outvars:", outvars);
     return outvars
 }
 
@@ -49,7 +51,8 @@ function telegram($message) {
 function getTitle() {
 
     const fileExtension = path.extname(global.vars.file);
-    let TitleA = path.basename(global.vars.file).replace(fileExtension, "").toLowerCase().split(" ");
+    //let TitleA = path.basename(global.vars.file).replace(fileExtension, "").toLowerCase().split(" ");
+    let TitleA = path.basename(global.vars.file).replace(fileExtension, "").split(" ");
     let newTitleR = "";
     PlayListID = 0;
     Title = TitleA[0];
@@ -66,7 +69,8 @@ function getTitle() {
                     newTitleR += " (" + element + ")";
                 } else {
                     // process.exit(0);
-                    newTitleR += " " + element.toLowerCase();
+                    //newTitleR += " " + element.toLowerCase();
+                    newTitleR += " " + element;
                 }
             });
         }

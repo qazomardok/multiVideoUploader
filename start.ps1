@@ -328,9 +328,9 @@ if ($fileFinded) {
             }
       }
 
-      if ((Get-Date).DayOfWeek -ne 'Sunday') {
+  #    if ((Get-Date).DayOfWeek -ne 'Sunday') {
          $WAIT_Seconds = 0
-      }
+  #    }
 
       if ($WAIT_Seconds -gt 0) {
             Add-Type -AssemblyName System.Windows.Forms

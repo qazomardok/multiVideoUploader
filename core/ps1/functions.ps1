@@ -131,6 +131,23 @@ function Toast {
 
 }
 
+Function OSend-Telegram {
+    Param([Parameter(Mandatory = $true)][String]$Message)
+
+    Toast $Message
+
+    $nodeExePath = Escape-VariableValue -Value $global:Config.NodeJSPath -B "`""
+    $Message = Escape-VariableValue -Value $Message -B "`""
+
+
+    Write-Output " ", "* 🎱 Сообщение в TG", $Message
+    $scriptPath = Escape-VariableValue -Value "$($global:Folder_Work)\core\nodejs\tg_msg.js"
+    $command = "& $nodeExePath $scriptPath $Folder_Work $Folder_Work no $Message"
+
+
+    Invoke-Expression $command
+}
+
 Function Send-Telegram {
     Param([Parameter(Mandatory = $true)][String]$Message)
 
@@ -169,12 +186,33 @@ Function Send-Telegram {
 
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     if (![string]::IsNullOrEmpty($Message)) {
-        $TGA = Invoke-RestMethod -Uri "https://api.telegram.org/bot$($global:Access.Telegram.Token)/sendMessage?chat_id=$($global:Access.Telegram.ChatID)&text=$($Message)"
+    $uri = "https://api.telegram.org/bot$($global:Access.Telegram.Token)/sendMessage?chat_id=$($global:Access.Telegram.ChatID)&text=$($Message)"
 
-        "* * TG уведомление отправлено: $($Message)"
+    $headers = @{
+        "Content-Type" = "application/json"
+    }
+
+    try {
+        $response = Invoke-RestMethod -Uri $uri -Method POST -Headers $headers
+
+        # Обработка успешного ответа, если необходимо
+
+    } catch {
+        # Обработка ошибки
+        Write-Host "Ошибка: $($_.Exception.Message)"
+        Write-Host "StackTrace: $($_.Exception.StackTrace)"
+
+        # Дополнительные детали об ошибке
+        if ($_.Exception.Response -ne $null -and $_.Exception.Response.Content -ne $null) {
+            Write-Host "Response Content: $($_.Exception.Response.Content)"
+        }
+    }
+
+
+
     }
     else {
-        "* * TG уведомление не отправлено: $($Message)"
+        "* * 2TG уведомление не отправлено: $($Message)"
     }
 }
 
