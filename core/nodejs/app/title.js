@@ -1,5 +1,5 @@
 newTitle = "";
-switch (Title) {
+switch (Title.toLowerCase()) {
   case "вести":
     case "ВЕСТИ":
     // newTitle += "Выпуск";
