@@ -131,24 +131,11 @@ function Toast {
 
 }
 
-Function OSend-Telegram {
-    Param([Parameter(Mandatory = $true)][String]$Message)
+Function Send-Telegram {
 
-    Toast $Message
-
-    $nodeExePath = Escape-VariableValue -Value $global:Config.NodeJSPath -B "`""
-    $Message = Escape-VariableValue -Value $Message -B "`""
-
-
-    Write-Output " ", "* 🎱 Сообщение в TG", $Message
-    $scriptPath = Escape-VariableValue -Value "$($global:Folder_Work)\core\nodejs\tg_msg.js"
-    $command = "& $nodeExePath $scriptPath $Folder_Work $Folder_Work no $Message"
-
-
-    Invoke-Expression $command
 }
 
-Function Send-Telegram {
+Function OSend-Telegram {
     Param([Parameter(Mandatory = $true)][String]$Message)
 
     Toast $Message
@@ -186,27 +173,28 @@ Function Send-Telegram {
 
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     if (![string]::IsNullOrEmpty($Message)) {
-    $uri = "https://api.telegram.org/bot$($global:Access.Telegram.Token)/sendMessage?chat_id=$($global:Access.Telegram.ChatID)&text=$($Message)"
+        $uri = "https://api.telegram.org/bot$($global:Access.Telegram.Token)/sendMessage?chat_id=$($global:Access.Telegram.ChatID)&text=$($Message)"
 
-    $headers = @{
-        "Content-Type" = "application/json"
-    }
-
-    try {
-        $response = Invoke-RestMethod -Uri $uri -Method POST -Headers $headers
-
-        # Обработка успешного ответа, если необходимо
-
-    } catch {
-        # Обработка ошибки
-        Write-Host "Ошибка: $($_.Exception.Message)"
-        Write-Host "StackTrace: $($_.Exception.StackTrace)"
-
-        # Дополнительные детали об ошибке
-        if ($_.Exception.Response -ne $null -and $_.Exception.Response.Content -ne $null) {
-            Write-Host "Response Content: $($_.Exception.Response.Content)"
+        $headers = @{
+            "Content-Type" = "application/json"
         }
-    }
+
+        try {
+            $response = Invoke-RestMethod -Uri $uri -Method POST -Headers $headers
+
+            # Обработка успешного ответа, если необходимо
+
+        }
+        catch {
+            # Обработка ошибки
+            Write-Host "Ошибка: $($_.Exception.Message)"
+            Write-Host "StackTrace: $($_.Exception.StackTrace)"
+
+            # Дополнительные детали об ошибке
+            if ($_.Exception.Response -ne $null -and $_.Exception.Response.Content -ne $null) {
+                Write-Host "Response Content: $($_.Exception.Response.Content)"
+            }
+        }
 
 
 
@@ -242,20 +230,62 @@ function runMMPEG {
         $filter = ""
     }
 
+
+    $basename = [System.IO.Path]::GetFileNameWithoutExtension($To)
+    $directory = [System.IO.Path]::GetDirectoryName($To)
+    $extension = [System.IO.Path]::GetExtension($To)
+
+    $StoryBasename = "Story-$basename"
+
+    $StoryTo = Join-Path -Path $directory -ChildPath "$StoryBasename$extension"
+    Write-Host "Путь сторис: $StoryTo"
+
+
+    $StoryH = 1440
+    $StoryW = 900
+    $StoryAW = $StoryW + ($StoryW * 0.1)
+
+
+
+    $filterShorts = "-filter_complex '[0:v]scale=$StoryW`:$StoryH,setsar=1:1,boxblur=30[bg];[1:v]scale=$StoryAW`:-1[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2[main];[2:v]scale=$StoryW/2:-1[logo];[main][logo]overlay=(W-w)/2:50' -t 15 -c:v h264_amf"
+    $commShorts = "$FFMPEG_Exec -i `"$From`" -i `"$From`" -i `"$FFMPEG_LogoFile`" -y $filterShorts -c:v h264_amf `"$StoryTo`""
+    #Invoke-Expression $commShorts
+
+    MMPEGfilterCommand -comm $commShorts
     if ($OnlyConvert -eq "True") {
         $comm = "$FFMPEG_Exec -i `"$From`" -y $filter -c:v h264_amf `"$To`""
-        Invoke-Expression $comm
+        #Invoke-Expression $comm
+
+        MMPEGfilterCommand -comm $comm
     }
     else {
 
-        $comm = "& $FFMPEG_Exec -i `"$From`" -y -i `"$FFMPEG_LogoFile`" -filter_complex '[0:v]scale=$($global:Config.Scale_X):$($global:Config.Scale_Y)[scaled];[scaled][1:v]overlay=$($global:Config.Logo_X):$($global:Config.Logo_Y)[out]' -map '[out]' -map 0:a -c:v h264_amf `"$To`" -hide_banner"
-        Invoke-Expression $comm
+        $comm = "& $FFMPEG_Exec -i `"$From`" -y -i `"$FFMPEG_LogoFile`" -filter_complex '[0:v]scale=$($global:Config.Scale_X):$($global:Config.Scale_Y)[scaled];[scaled][1:v]overlay=$($global:Config.Logo_X):$($global:Config.Logo_Y)[out]' -map '[out]' -map 0:a -c:v h264_amf `"$To`""
+        #Invoke-Expression $comm
 
+        MMPEGfilterCommand -comm $comm
     }
 
-    Write-Output $comm
-    Write-Output "* Готово!"
 }
+
+
+
+function MMPEGfilterCommand {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$comm
+    )
+
+    $REcomm = '$progress = ""
+    '+ $comm + ' 2>&1 | ForEach-Object { if ($_ -match "frame=" -or $_ -match "time=" -or $_ -match "Output #") { Write-Host -NoNewline "`r$progress" $progress = $_  }}'
+
+    Write-Output "", "************************************", "🎥 Сборка видеофайла"
+    Invoke-Expression $REcomm
+    Write-Output ""
+    Write-Output "⚡ Готово", "************************************", ""
+}
+
+
 
 function Escape-VariableValue {
     param(

@@ -74,9 +74,9 @@ function getTitle() {
                 }
             });
         }
+        
     } else {
         newTitleR = path.basename(global.vars.file, fileExtension);
-
     }
     out = {
         "newTitleExt": newTitleR + fileExtension,
