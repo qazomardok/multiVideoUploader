@@ -131,11 +131,13 @@ function Toast {
 
 }
 
-Function pSend-Telegram {
-
+Function Send-Telegram {
+    Param([Parameter(Mandatory = $true)][String]$Message)
+    # Write-Output $Message
+    Toast $Message
 }
 
-Function Send-Telegram {
+Function OSend-Telegram {
     Param([Parameter(Mandatory = $true)][String]$Message)
 
     Toast $Message
@@ -231,13 +233,13 @@ function runMMPEG {
     }
 
 
-    $basename = [System.IO.Path]::GetFileNameWithoutExtension($To)
-    $directory = [System.IO.Path]::GetDirectoryName($To)
-    $extension = [System.IO.Path]::GetExtension($To)
+    $TObasename = [System.IO.Path]::GetFileNameWithoutExtension($To)
+    $TOdirectory = [System.IO.Path]::GetDirectoryName($To)
+    $TOextension = [System.IO.Path]::GetExtension($To)
 
-    $StoryBasename = "Story-$basename"
+    $StoryBasename = "Story-$TObasename"
 
-    $StoryTo = Join-Path -Path $directory -ChildPath "$StoryBasename$extension"
+    $StoryTo = Join-Path -Path $TOdirectory -ChildPath "$StoryBasename$TOextension"
 
 
     $StoryH = 1440
@@ -246,7 +248,7 @@ function runMMPEG {
 
 
 
-$filterShortsArray = @(
+    $filterShortsArray = @(
         "[0:v]scale=$StoryW`:$StoryH,setsar=1:1,boxblur=30[bg]",
         "[1:v]scale=$StoryAW`:-1[fg]",
         "[bg][fg]overlay=(W-w)/2:(H-h)/2[main]",
@@ -256,21 +258,22 @@ $filterShortsArray = @(
 
     $filterShortsString = $filterShortsArray -join ';'
 
-    $commShorts = "$FFMPEG_Exec -i `"$From`" -i `"$From`" -i `"$FFMPEG_LogoFile`" -y -filter_complex `"$filterShortsString`" -c:v h264_amf -t 3 `"$StoryTo`""
+    $commShorts = "$FFMPEG_Exec -i `"$From`" -i `"$From`" -i `"$FFMPEG_LogoFile`" -y -filter_complex `"$filterShortsString`" -c:v h264_amf -t 15 `"$StoryTo`""
     #Invoke-Expression $commShorts
     # $filterShorts = "-filter_complex '[0:v]scale=$StoryW`:$StoryH,setsar=1:1,boxblur=30[bg];[1:v]scale=$StoryAW`:-1[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2[main];[2:v]scale=$StoryW/2:-1[logo];[main][logo]overlay=(W-w)/2:50' -t 15 -c:v h264_amf"
 
     # Invoke-Expression $commShorts
     # Start-Process -FilePath $StoryTo
-# exit
+    # exit
     MMPEGfilterCommand -comm $commShorts
+
     if ($OnlyConvert -eq "True") {
         $comm = "$FFMPEG_Exec -i `"$From`" -y $filter -c:v h264_amf `"$To`""
-
+        # Write-Output "mode OC"
         MMPEGfilterCommand -comm $comm
     }
     else {
-
+        # Write-Output "mode FC"
         $comm = "& $FFMPEG_Exec -i `"$From`" -y -i `"$FFMPEG_LogoFile`" -filter_complex '[0:v]scale=$($global:Config.Scale_X):$($global:Config.Scale_Y)[scaled];[scaled][1:v]overlay=$($global:Config.Logo_X):$($global:Config.Logo_Y)[out]' -map '[out]' -map 0:a -c:v h264_amf `"$To`""
         #Invoke-Expression $comm
 
@@ -289,7 +292,7 @@ function MMPEGfilterCommand {
 
     $REcomm = '$progress = ""
     '+ $comm + ' 2>&1 | ForEach-Object { if ($_ -match "frame=" -or $_ -match "time=" -or $_ -match "Output #") { Write-Host -NoNewline "`r* ⚡ $progress" $progress = $_  }}'
-    Write-Output "* Выполняем $($comm)"
+    # Write-Output "* Выполняем $($comm)"
     Write-Output "*", "************************************", "*", "* 🎥 Сборка видеофайла"
     Invoke-Expression $REcomm
     Write-Output ""
