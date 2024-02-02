@@ -34,13 +34,39 @@ $global:Folder_Work = $PSScriptRoot
 
 $Text = ""
 
-Set-Location $global:Folder_Work
-Write-Output $global:Folder_Work
 
-$logFile = "$($global:Folder_Work)\run.bat"
-$logText = "echo Hello World!"
-New-Item -Path $logFile -ItemType file
-Set-Content -Path $logFile $logText
+
+
+$commands_logfolderName = ".commands_log"
+
+# Создаем полный путь к папке
+$commands_logfolderPath = Join-Path -Path $global:Folder_Work -ChildPath $commands_logfolderName
+
+# Проверяем, существует ли папка
+if (-not (Test-Path -Path $commands_logfolderPath)) {
+    # Создаем папку, если она не существует
+    New-Item -Path $commands_logfolderPath -ItemType Directory
+}
+Get-ChildItem -Path $commands_logfolderPath -Recurse | Where-Object { !$_.PSIsContainer -and $_.CreationTime -lt (Get-Date).AddDays(-7) } | Remove-Item -Force
+$currentDateTime = Get-Date
+$formattedDateTime = $currentDateTime.ToString("dd.MM.yyyy H-mm")
+
+
+$logFile = "$($commands_logfolderPath)\$formattedDateTime.bat"
+$logText = $MyInvocation.MyCommand
+$logText = ""
+$PSBoundParameters.GetEnumerator() | ForEach-Object { $logText += "-$($_.Key) ""$($_.Value)"" " }
+Write-Output $logText
+
+
+$CCOM = "powershell.exe -exec bypass -file `"$($global:Folder_Work)`\$($MyInvocation.MyCommand)`" $($logText)"
+
+New-Item -Path $logFile -ItemType file -Force
+Set-Content -Path $logFile $CCOM
+
+Write-Output "📝 Команда записана в $logFile"
+
+Set-Location $global:Folder_Work
 
 
 . .\core\ps1\functions.ps1
@@ -120,7 +146,7 @@ if ($File -ne "empty") {
       if ($global:videoExtensions -contains $extension) {
             if ($File -ne $FileCName) {
 
-                  Write-Output "*", "* Копируем:", "* Из  $File` ", "* В   $FileCName"
+                  Write-Output "*", "* Копируем:", "* >>  $File` ", "* <<  $FileCName"
 
                   try {
                         Copy-Item -Path $File -Destination $FileCName -Force  -ErrorAction SilentlyContinue
@@ -184,7 +210,7 @@ if ($fileFinded) {
 
       # УСТАНАВЛИВАЕМ ЛОГОТИП
       if (($AddLogo -eq "True") -or ($Convert -eq "True")) {
-            Write-Output "************************************", "*", "* Рабочий файл является видео.", "* Накладываем логотип."
+            Write-Output "************************************", "*", "* Рабочий файл является видео.", "* Будет наложен логотип."
 
 
             $fileName = [System.IO.Path]::GetFileNameWithoutExtension($File)
