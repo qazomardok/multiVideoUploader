@@ -19,14 +19,19 @@ switch (Title.toLowerCase()) {
     // newTitle += "Выпуск";
     // newTitle += "АКТВ Вести";
     newTitle += "Что посмотреть в сети АКТВ?";
-    vkPlayListID = 50969645;
+    vkPlayListID = 50969647;
     break;
 
   default:
     //newTitle += Title.charAt(0).toUpperCase() + Title.slice(1);
     newTitle += Title;
-    vkPlayListID = 50969645;
+    vkPlayListID = 50969646;
     break;
 }
 
-module.exports = newTitle;
+var out = {
+  newTitle: newTitle,
+  vkPlayListID: vkPlayListID
+}
+
+module.exports = out;

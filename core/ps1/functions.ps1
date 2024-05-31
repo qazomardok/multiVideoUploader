@@ -131,13 +131,13 @@ function Toast {
 
 }
 
-Function Send-Telegram {
+Function OSend-Telegram {
     Param([Parameter(Mandatory = $true)][String]$Message)
     # Write-Output $Message
     Toast $Message
 }
 
-Function OSend-Telegram {
+Function Send-Telegram {
     Param([Parameter(Mandatory = $true)][String]$Message)
 
     Toast $Message
@@ -224,6 +224,7 @@ function runMMPEG {
     # $To
     $FFMPEG_Exec = -join ($global:Folder_Work, "\core\ffmpeg\ffmpeg.exe")
     $FFMPEG_LogoFile = -join ($global:Folder_Work, "\img\logo.png")
+    $SubscribesMov = -join ($global:Folder_Work, "\files\link_vk.mov");
 
     if ($Scale -eq "True") {
         $filter = "-filter_complex `"[0:v]scale=$($global:Config.Scale_X):$($global:Config.Scale_Y)[out]`" -map `"[out]`"  -map 0:a"
@@ -246,20 +247,29 @@ function runMMPEG {
     $StoryW = 900
     $StoryAW = $StoryW + ($StoryW * 0.1)
 
+    $SubscribePos = @(
 
+    # W:H:X:Y
+    "290:120:125:550", #сайт
+    "270:120:465:550", #вк
+    "250:120:782:550"  #ОК
+)
 
-    $filterShortsArray = @(
-        "[0:v]scale=$StoryW`:$StoryH,setsar=1:1,boxblur=30[bg]",
-        "[1:v]scale=$StoryAW`:-1[fg]",
-        "[bg][fg]overlay=(W-w)/2:(H-h)/2[main]",
-        "[2:v]scale=900/2:-1[logo]",
-        "[main][logo]overlay=(main_w-overlay_w)/2:(H-h)/7"
-    )
+$RandomSubscribePos = Get-Random -InputObject $SubscribePos
 
-    $filterShortsString = $filterShortsArray -join ';'
-
-    $commShorts = "$FFMPEG_Exec -i `"$From`" -i `"$From`" -i `"$FFMPEG_LogoFile`" -y -filter_complex `"$filterShortsString`" -c:v h264_amf -t 15 `"$StoryTo`""
-    #Invoke-Expression $commShorts
+$filterShortsArray = @(
+    "[0:v]scale=$StoryW`:$StoryH,setsar=1:1,boxblur=30[bg]",
+    "[1:v]scale=$StoryAW`:-1[fg]",
+    "[bg][fg]overlay=(W-w)/2:(H-h)/2[main]",
+    "[2:v]scale=$StoryH/2.2:-1[logo]",
+    "[3:v]crop=$RandomSubscribePos,scale=-1:300[subscribe]",
+    "[main][logo]overlay=(main_w-overlay_w)/2:(H-h)/9[main2]",
+    "[main2][subscribe]overlay=(main_w-overlay_w)/2:(H/3-h)*5.5;"
+)
+$filterShortsString = $filterShortsArray -join ';'
+$Seconds = 15
+$commShorts = "$FFMPEG_Exec -i `"$From`" -i `"$From`"  -i `"$FFMPEG_LogoFile`" -i `"$SubscribesMov`" -y -filter_complex `"$filterShortsString`" -c:v h264_amf -t $Seconds `"$StoryTo`""
+#Invoke-Expression $commShorts
     # $filterShorts = "-filter_complex '[0:v]scale=$StoryW`:$StoryH,setsar=1:1,boxblur=30[bg];[1:v]scale=$StoryAW`:-1[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2[main];[2:v]scale=$StoryW/2:-1[logo];[main][logo]overlay=(W-w)/2:50' -t 15 -c:v h264_amf"
 
     # Invoke-Expression $commShorts

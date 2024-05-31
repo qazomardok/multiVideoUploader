@@ -249,7 +249,14 @@ if ($fileFinded) {
             }
 
             if ($Notify -eq "True") {
+
                   Send-Telegram "🟢 Наложен логотип на $File."
+
+                        $msg = "Наложен логотип на $File"
+                        $computerName = "verstka"
+                        msg * /server:$computerName $msg
+                        Invoke-Command -ComputerName verstka -ScriptBlock {msg * $msg}
+
             }
             Write-Output "*", "************************************"
       }
@@ -427,6 +434,6 @@ if ($fileFinded) {
 }
 
 Write-Output "* Работа завершена.", "************************************"
-# Start-Sleep -Seconds 1200
+Start-Sleep -Seconds 120
 # Environment.Exit(0)
 Exit 0

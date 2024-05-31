@@ -102,6 +102,7 @@ function runVKupload() {
     let Title = core.newTitle()
     console.log(`${global.vars.file} будет загружен в ВК`)
     console.log(`под именем "${Title.newTitle}"`)
+    console.log(`в плейлист №"${Title.PlayListID}"`)
     // process.exit(0);
     const video_file = core.fs.createReadStream(global.vars.file);
 
@@ -111,12 +112,16 @@ function runVKupload() {
             group_id: global.access.VK.Group_ID,
             access_token: global.access.VK.access_token,
             name: Title.newTitle,
-            album_id: Title.vkPlayListID,
+            album_id: Title.PlayListID,
            // wallpost: (global.vars.description === "") ? 0 : 1,
             v: 5.95
         },
         json: true,
     };
+    console.log(`Title:`, Title)
+    console.log(`upload_url_options:`, upload_url_options)
+
+    // process.exit()
 
     core.request.get(upload_url_options, function (error, response, body) {
 
@@ -137,7 +142,7 @@ function runVKupload() {
             video_id: video_id,
             owner_id: global.access.VK.user_id,
             name: Title.newTitle,
-            album_id: Title.vkPlayListID,
+            album_id: Title.PlayListID,
             description: global.vars.description,
         //    wallpost: (global.vars.description === "") ? 0 : 1,
             v: 5.95
