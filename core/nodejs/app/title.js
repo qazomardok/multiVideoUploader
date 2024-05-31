@@ -3,8 +3,8 @@ switch (Title.toLowerCase()) {
   case "вести":
     case "ВЕСТИ":
     // newTitle += "Выпуск";
-    newTitle += "АКТВ Вести";
-    //newTitle += "Летние новости";
+    //newTitle += "АКТВ Вести";
+    newTitle += "Летние новости";
     vkPlayListID = 50969644;
     break;
 
