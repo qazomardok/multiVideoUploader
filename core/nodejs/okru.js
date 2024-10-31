@@ -44,7 +44,7 @@ function uploadVideo(uploadUrl) {
   const videoFileName = Title.newTitleExt;
 
   console.log("Загружается видео " + videoFileName);
-  
+
 
   core.request.post({ url: uploadUrl, formData: formData }, function (err, httpResponse, body) {
     if (err) {
@@ -66,6 +66,7 @@ function updateVideo(videoId) {
     access_token: global.access.OK.okaccessToken,
     application_key: global.access.OK.okpublic_key,
     format: 'json',
+    publish: true,
     vid: videoId
   };
 
@@ -73,7 +74,7 @@ function updateVideo(videoId) {
     if (err) {
       return console.error('core.request failed:', err);
     }
-    let Title = core.newTitle() 
+    let Title = core.newTitle()
     let msg = `📺 Видео "${Title.newTitle}" загружено в OK: https://ok.ru/video/${videoId}`
                 console.log(`** ${msg}`);
                 core.telegram(msg)

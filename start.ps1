@@ -6,6 +6,8 @@
       [string]$Convert = "False",
       [string]$Scale = "True",
       [string]$SocialSend = "False",
+      [string]$isCron = "False",
+      [string]$fromContext = "False",
 
 
       [string]$SendYouTube = "False",
@@ -18,12 +20,28 @@
       [int]$AddHour = 0,
       [int]$AddMin = 0,
 
-
+      [string]$Server = "",
       [string]$Text = "",
-      [string]$Rename = ""
-
+      [string]$Rename = "",
+      [string]$Reinstall = "False",
+      [string]$Stopnow = "False"
 )
 
+ if($Server -eq ""){
+
+      $global:SocialNetworksFiles = @{
+            "RUTUBE"    = "rutube"
+            "ВКонтакте" = "vk"
+            "YouTube"   = "youtube"
+            #"Telegram" = "telegram"
+            "OK"        = "okru"
+      }
+
+} else {
+      $global:SocialNetworksFiles = @{
+            $Server = $Server
+      }
+}
 
 # $SocialSend = "False"
 # $Notify = "False"
@@ -32,7 +50,7 @@
 
 $global:Folder_Work = $PSScriptRoot
 
-$Text = ""
+# $Text = ""
 
 
 
@@ -64,7 +82,27 @@ $CCOM = "powershell.exe -exec bypass -file `"$($global:Folder_Work)`\$($MyInvoca
 New-Item -Path $logFile -ItemType file -Force
 Set-Content -Path $logFile $CCOM
 
-Write-Output "📝 Команда записана в $logFile"
+Write-Output "📝 Команда `"$($global:Folder_Work)`\$($MyInvocation.MyCommand)`" $($logText)"
+Write-Output "📝 записана в $logFile"
+
+if($fromContext -eq "True"){
+if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+
+    $arguments = "-exec bypass -file `"$($global:Folder_Work)`\$($MyInvocation.MyCommand)`" $($logText)"
+    Start-Process -FilePath "powershell.exe" -ArgumentList $arguments -Verb RunAs
+
+
+#     Start-Process $CCOM -Verb RunAs
+      Start-Sleep -Seconds 30
+Exit 0
+}
+
+}
+
+
+
+
+
 
 Set-Location $global:Folder_Work
 
@@ -150,7 +188,6 @@ if ($File -ne "empty") {
 
                   try {
                         Copy-Item -Path $File -Destination $FileCName -Force  -ErrorAction SilentlyContinue
-
                   }
                   catch {
                         Stop-Run -Msg "Возникла ошибка при копировании файла."
@@ -202,8 +239,8 @@ else {
 
 if ($fileFinded) {
 
-      if ($Notify -eq "True") {
-            Send-Telegram "⚡ Обнаружен файл $([System.IO.Path]::GetFileName($File))"
+      if (($Notify -eq "True") -and ($isCron -ne "True")) {
+            Send-Telegram "⚡ Обрабатывается файл $([System.IO.Path]::GetFileName($File))"
       }
 
 
@@ -253,15 +290,16 @@ if ($fileFinded) {
                   Send-Telegram "🟢 Наложен логотип на $File."
 
                         $msg = "Наложен логотип на $File"
-                        $computerName = "verstka"
-                        msg * /server:$computerName $msg
-                        Invoke-Command -ComputerName verstka -ScriptBlock {msg * $msg}
-
+                        # $computerName = "verstka"
+                        # msg * /server:$computerName $msg
+                        # Invoke-Command -ComputerName verstka -ScriptBlock {msg * $msg}
+                        Toast $msg
             }
             Write-Output "*", "************************************"
       }
       else {
             Write-Output ("* ⚡ Для установки логотипа добавьте параметр `"-AddLogo `$True`" в запрос.")
+            $FileTo = $File
       }
 
 
@@ -269,15 +307,82 @@ if ($fileFinded) {
       $WAIT_Seconds = ($AddHour * 60 + $AddMin) * 60
 
       if ($WAIT_Seconds -gt 0) {
+
+
+
+$folderPath = "\Отправка в соцсети\"
+
+try {
+    $tasks = Get-ScheduledTask -TaskPath $folderPath -ErrorAction Stop |
+        ForEach-Object {
+            $taskName = $_.TaskName
+            $taskInfo = Get-ScheduledTaskInfo -TaskName $taskName -TaskPath $folderPath
+            if ($taskInfo.LastTaskResult -eq 0) {
+                $_  # Возвращаем задачу, если она завершилась с кодом 0x0
+            }
+        }
+
+    # Если есть задачи, которые нужно удалить, выполняем их удаление
+    if ($tasks) {
+        $tasks | ForEach-Object {
+            Unregister-ScheduledTask -TaskName $_.TaskName -TaskPath $folderPath -Confirm:$false
+        }
+    } else {
+        Write-Host "Нет задач с кодом завершения 0x0 в указанной папке."
+    }
+
+} catch {
+    Write-Host "В папке '$($folderPath)' нет задач или произошла ошибка: $_"
+}
+
+# $tasksMsgs = @()
+$cronWAITSECONDS = $WAIT_Seconds
+ foreach ($key in $global:SocialNetworksFiles.Keys) {
+                        # Write-Output " ", "* 🎱 Запуск модуля $key..."
+                        # $scriptPath = Escape-VariableValue -Value "$($global:Folder_Work)\core\nodejs\$($SocialNetworksFiles[$key]).js"
+
+
+
+$Action = New-ScheduledTaskAction -Execute "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -Argument "-command `"& '$($MyInvocation.MyCommand.Path)' -File '$FileTo' -AddLogo 'False' -SocialSend 'True' -isCron 'True' -Notify 'True' -Server $($global:SocialNetworksFiles[$key])`""
+
+$taskName = "$($AddHour)ч. $($global:SocialNetworksFiles[$key]) $([System.IO.Path]::GetFileName($File))_$((Get-Date).Ticks)"
+$Trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).AddSeconds($cronWAITSECONDS)
+$Settings = New-ScheduledTaskSettingsSet -RunOnlyIfNetworkAvailable -WakeToRun -AllowStartIfOnBatteries -StartWhenAvailable
+$SvcUser = New-ScheduledTaskPrincipal -UserID "NT AUTHORITY\SYSTEM" -LogonType Password
+Register-ScheduledTask -TaskPath $folderPath -TaskName "$taskName" -Action $Action -Trigger $Trigger -Principal $SvcUser -Settings $Settings
+
+# $tasksMsgs += $taskName
+
+Send-Telegram "⚡ Добавлена запись в планировщик: " + $taskName
+
+$cronWAITSECONDS = $cronWAITSECONDS + 300
+}
+
+# Send-Telegram "⚡ Добавлены записи в планировщик: " + ($tasksMsgs -join ", ")
+
+
+if($isCron -eq "True"){
+} else {
+
             $endTime = $(Get-Date).AddSeconds($WAIT_Seconds)
             $tms = "🕘 Обработка $([System.IO.Path]::GetFileName($File)) будет продолжена $($endTime)."
-            if ($Notify) {
+            if ($Notify -eq "True") {
                   Send-Telegram $tms
+                  Write-Output $tms
             }
             else {
                   Write-Output $tms
             }
-            Start-Sleep -Seconds $WAIT_Seconds
+
+
+Write-Output "* Работа завершена.", "************************************"
+Start-Sleep -Seconds 120
+
+# Environment.Exit(0)
+Exit 0
+
+            # Start-Sleep -Seconds $WAIT_Seconds
+}
       }
 
       if ($SocialSend -eq "True") {
@@ -292,12 +397,7 @@ if ($fileFinded) {
 
 
                   Write-Output "* Folder_Work: $Folder_Work"
-                  $SocialNetworksFiles = @{
-                        "ВКонтакте" = "vk"
-                        "YouTube"   = "youtube"
-                        #"Telegram" = "telegram"
-                        "OK"        = "okru"
-                  }
+
 
                   $command = "D:"
                   Invoke-Expression $command
@@ -314,9 +414,9 @@ if ($fileFinded) {
                   Invoke-Expression $command
 
 
-                  foreach ($key in $SocialNetworksFiles.Keys) {
+                  foreach ($key in $global:SocialNetworksFiles.Keys) {
                         Write-Output " ", "* 🎱 Запуск модуля $key..."
-                        $scriptPath = Escape-VariableValue -Value "$($global:Folder_Work)\core\nodejs\$($SocialNetworksFiles[$key]).js"
+                        $scriptPath = Escape-VariableValue -Value "$($global:Folder_Work)\core\nodejs\$($global:SocialNetworksFiles[$key]).js"
                         $command = "& $nodeExePath $scriptPath $videoFile $Folder_Work $Text"
                         Invoke-Expression $command
                         Write-Output " "
@@ -330,7 +430,7 @@ if ($fileFinded) {
             }
       }
       else {
-            Write-Output ("* Для отправки в социальные сети добавьте параметр `"-SocialSend `$True`" в запрос.")
+            Write-Output ("* Для отправки в социальные сети добавьте -SocialSend `"True`" в запрос.")
       }
 
       if ($Remove -eq "True") {
@@ -374,8 +474,6 @@ if ($fileFinded) {
 
             $newTime = (Get-Date) + $timespan
             $ht = $newTime.ToString("HH:mm")
-
-
 
             $form = New-Object System.Windows.Forms.Form
             $form.Text = "Подтверждение"
@@ -432,8 +530,13 @@ if ($fileFinded) {
 
       }
 }
+if($isCron -eq "True"){
 
+} else {
 Write-Output "* Работа завершена.", "************************************"
-Start-Sleep -Seconds 120
+      if($Stopnow -ne "True"){
+      Start-Sleep -Seconds 120
+      }
+}
 # Environment.Exit(0)
 Exit 0

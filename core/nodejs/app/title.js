@@ -1,17 +1,24 @@
 newTitle = "";
 switch (Title.toLowerCase()) {
   case "вести":
-    case "ВЕСТИ":
     // newTitle += "Выпуск";
-    //newTitle += "АКТВ Вести";
-    newTitle += "Летние новости";
+    newTitle += "АКТВ Вести";
+    poster = "vesti.png";
+    // newTitle += "Летние новости";
     vkPlayListID = 50969644;
     break;
-
-    case "неделя":
-      case "НЕДЕЛЯ":
+case "story60sec-вести":
+  newTitle += "АКТВ Вести Shorts";
+  vkPlayListID = 50969644;
+    break;
+case "story-неделя":
+  newTitle += "Неделя Shorts";
+  vkPlayListID = 50969644;
+    break;
+  case "неделя":
     // newTitle += "Выпуск";
     // newTitle += "АКТВ Вести";
+    poster = "nedelya.png";
     newTitle += "Неделя";
     vkPlayListID = 50969645;
     break;
@@ -31,7 +38,7 @@ switch (Title.toLowerCase()) {
 
 var out = {
   newTitle: newTitle,
-  vkPlayListID: vkPlayListID
-}
+  vkPlayListID: vkPlayListID,
+};
 
 module.exports = out;

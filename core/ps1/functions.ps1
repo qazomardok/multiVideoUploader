@@ -127,6 +127,8 @@ function Toast {
     $notify.visible = $true
     $notify.showballoontip(10, "AutoVideos", $Message, [system.windows.forms.tooltipicon]::None)
     $notify.Dispose()
+
+    # Send-Telegram $Message
     return
 
 }
@@ -141,6 +143,8 @@ Function Send-Telegram {
     Param([Parameter(Mandatory = $true)][String]$Message)
 
     Toast $Message
+
+    return
 
     $updated = $false
 
@@ -206,6 +210,19 @@ Function Send-Telegram {
     }
 }
 
+
+function runMMPEG1 {
+
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$From,
+        [string]$To,
+        [string]$OnlyConvert = "Fasle",
+        [string]$Scale = "Fasle",
+        [int]$SecondsLimit = 0
+        )
+}
+
 function runMMPEG {
 
     param (
@@ -213,7 +230,9 @@ function runMMPEG {
         [string]$From,
         [string]$To,
         [string]$OnlyConvert = "Fasle",
-        [string]$Scale = "Fasle")
+        [string]$Scale = "Fasle",
+        [int]$SecondsLimit = 0
+        )
 
     # Write-Output "* Копируем..."
 
@@ -239,8 +258,10 @@ function runMMPEG {
     $TOextension = [System.IO.Path]::GetExtension($To)
 
     $StoryBasename = "Story-$TObasename"
+    $StoryFullBasename = "Story60sec-$TObasename"
 
     $StoryTo = Join-Path -Path $TOdirectory -ChildPath "$StoryBasename$TOextension"
+    $StoryFULLTo = Join-Path -Path $TOdirectory -ChildPath "$StoryFullBasename$TOextension"
 
 
     $StoryH = 1440
@@ -268,7 +289,17 @@ $filterShortsArray = @(
 )
 $filterShortsString = $filterShortsArray -join ';'
 $Seconds = 15
-$commShorts = "$FFMPEG_Exec -i `"$From`" -i `"$From`"  -i `"$FFMPEG_LogoFile`" -i `"$SubscribesMov`" -y -filter_complex `"$filterShortsString`" -c:v h264_amf -t $Seconds `"$StoryTo`""
+$YSeconds = 60
+# if($SecondsLimit -eq 0){
+#     $tstring = ""
+# } else {
+#     $Seconds = $SecondsLimit
+    $tstring = "-t $Seconds "
+    $tYstring = "-t $YSeconds "
+# }
+$commShorts = "$FFMPEG_Exec -i `"$From`" -i `"$From`"  -i `"$FFMPEG_LogoFile`" -i `"$SubscribesMov`" -y -filter_complex `"$filterShortsString`" -c:v h264_amf $tstring `"$StoryTo`""
+$commShortsFull = "$FFMPEG_Exec -i `"$From`" -i `"$From`"  -i `"$FFMPEG_LogoFile`" -i `"$SubscribesMov`" -y -filter_complex `"$filterShortsString`" -c:v h264_amf $tYstring `"$StoryFULLTo`""
+# $commShortsFull = "$FFMPEG_Exec -i `"$From`" -i `"$From`"  -i `"$FFMPEG_LogoFile`" -i `"$SubscribesMov`" -y -filter_complex `"$filterShortsString`" -c:v h264_amf `"$StoryFULLTo`""
 #Invoke-Expression $commShorts
     # $filterShorts = "-filter_complex '[0:v]scale=$StoryW`:$StoryH,setsar=1:1,boxblur=30[bg];[1:v]scale=$StoryAW`:-1[fg];[bg][fg]overlay=(W-w)/2:(H-h)/2[main];[2:v]scale=$StoryW/2:-1[logo];[main][logo]overlay=(W-w)/2:50' -t 15 -c:v h264_amf"
 
@@ -289,7 +320,7 @@ $commShorts = "$FFMPEG_Exec -i `"$From`" -i `"$From`"  -i `"$FFMPEG_LogoFile`" -
 
         MMPEGfilterCommand -comm $comm
     }
-
+    MMPEGfilterCommand -comm $commShortsFull
 }
 
 

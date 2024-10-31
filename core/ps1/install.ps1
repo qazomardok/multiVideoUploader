@@ -1,4 +1,160 @@
-﻿$ffmpegFolderPath = Join-Path -Path $global:Folder_Work -ChildPath "core\ffmpeg"
+﻿# Убедитесь, что переменная $global:videoExtensions определена
+$global:videoExtensions = ".avi", ".mp4", ".mkv", ".mov", ".mpg"
+
+# Укажите путь к вашему скрипту
+$scriptPath = "$($global:Folder_Work)\start.ps1"
+
+# Функция для добавления контекстного меню
+function Add-ContextMenu {
+    param (
+        [string]$extension,
+        [string]$scriptPath
+    )
+
+    # Основной путь к контекстному меню
+    $contextMenuPath = "Registry::HKEY_CLASSES_ROOT\SystemFileAssociations\$extension\shell\VideoProcessing"
+    $commandBasePath = "$contextMenuPath\shell"
+
+    # Создание записи для главного пункта контекстного меню
+    New-Item -Path $contextMenuPath -Force | Out-Null
+    Set-ItemProperty -Path $contextMenuPath -Name "MUIVerb" -Value "Обработка видео" -Force
+    Set-ItemProperty -Path $contextMenuPath -Name "SubCommands" -Value "" -Force
+
+    # Создание подпунктов меню
+    $subCommands = @(
+        @{
+            Verb = "SendToSocialMedia"
+            Name = "Отправить в соцсети"
+            Args = "-File `"%1`" -AddLogo `"False`" -SocialSend `"True`" -Notify `"True`" -fromContext `"True`""
+        },
+        @{
+            Verb = "AddLogo"
+            Name = "Наложить логотип"
+            Args = "-File `"%1`" -AddLogo `"True`" -SocialSend `"False`" -Notify `"True`" -fromContext `"True`""
+        },
+        @{
+            Verb = "ProcessLater0"
+            Name = "Наложить логотип и опубликовать"
+            Args = "-File `"%1`" -AddLogo `"True`" -SocialSend `"True`" -Notify `"True`" -fromContext `"True`""
+        },
+        @{
+            Verb = "ProcessLater3"
+            Name = "Обработать через 3 часа"
+            Args = "-File `"%1`"  -AddHour `"3`" -AddLogo `"True`" -SocialSend `"False`" -Notify `"True`" -fromContext `"True`""
+        },
+        @{
+            Verb = "ProcessLater6"
+            Name = "Обработать через 6 часов"
+            Args = "-File `"%1`"  -AddHour `"6`" -AddLogo `"True`" -SocialSend `"False`" -Notify `"True`" -fromContext `"True`""
+        },
+        @{
+            Verb = "ProcessLater9"
+            Name = "Обработать через 9 часов"
+            Args = "-File `"%1`"  -AddHour `"9`" -AddLogo `"True`" -SocialSend `"False`" -Notify `"True`" -fromContext `"True`""
+        },,
+        @{
+            Verb = "ProcessLater12"
+            Name = "Обработать через 12 часов"
+            Args = "-File `"%1`"  -AddHour `"12`" -AddLogo `"True`" -SocialSend `"False`" -Notify `"True`" -fromContext `"True`""
+        },,
+        @{
+            Verb = "ProcessLater19"
+            Name = "Обработать через 19 часов"
+            Args = "-File `"%1`"  -AddHour `"19`" -AddLogo `"True`" -SocialSend `"False`" -Notify `"True`" -fromContext `"True`""
+        },
+        @{
+            Verb = "ProcessLater24"
+            Name = "Обработать через 24 часа"
+            Args = "-File `"%1`"  -AddHour `"24`" -AddLogo `"True`" -SocialSend `"False`" -Notify `"True`" -fromContext `"True`""
+        },
+        @{
+            Verb = "ProcessLater36"
+            Name = "Обработать через 36 часа"
+            Args = "-File `"%1`"  -AddHour `"36`" -AddLogo `"True`" -SocialSend `"False`" -Notify `"True`" -fromContext `"True`""
+        },
+        @{
+            Verb = "ProcessLater48"
+            Name = "Обработать через 48 часа"
+            Args = "-File `"%1`"  -AddHour `"48`" -AddLogo `"True`" -SocialSend `"False`" -Notify `"True`" -fromContext `"True`""
+        },
+        @{
+            Verb = "ProcessLater66"
+            Name = "Обработать через 66 часа"
+            Args = "-File `"%1`"  -AddHour `"66`" -AddLogo `"True`" -SocialSend `"False`" -Notify `"True`" -fromContext `"True`""
+        }
+    )
+
+    foreach ($key in $global:SocialNetworksFiles.Keys) {
+        $subCommands += @{
+            Verb = "ProcessLater$($key)"
+            Name = "Отправить в $key"
+            Args = "-File `"%1`" -AddLogo `"False`" -SocialSend `"True`" -Notify `"False`" -Server `"$($global:SocialNetworksFiles[$key])`" -fromContext `"True`""
+        }
+    }
+
+    foreach ($subCommand in $subCommands) {
+        $subCommandPath = "$commandBasePath\$($subCommand.Verb)"
+        New-Item -Path $subCommandPath -Force | Out-Null
+        Set-ItemProperty -Path $subCommandPath -Name "MUIVerb" -Value $subCommand.Name -Force
+
+        $commandPath = "$subCommandPath\command"
+        New-Item -Path $commandPath -Force | Out-Null
+        Set-ItemProperty -Path $commandPath -Name "(Default)" -Value "powershell.exe -exec bypass -file `"$scriptPath`" $($subCommand.Args)" -Force
+
+
+        # Write-Output "💼 команда меню: $($subCommand.Args)"
+        # Write-Output "powershell.exe -exec bypass -file '$scriptPath' $($subCommand.Args)"
+        # Write-Output "======================"
+    }
+}
+
+# Функция для удаления контекстного меню
+function Remove-ContextMenu {
+    param (
+        [string]$extension
+    )
+
+    # Основной путь к контекстному меню
+    $contextMenuPath = "Registry::HKEY_CLASSES_ROOT\SystemFileAssociations\$extension\shell\VideoProcessing"
+
+    # Удаление записи для пункта контекстного меню
+    if (Test-Path -Path $contextMenuPath) {
+        Remove-Item -Path $contextMenuPath -Recurse -Force
+    }
+}
+
+if (([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
+    Write-Host "Script runned with Admin privileges"
+
+
+if ($Reinstall -eq "True") {
+
+    Write-Output "💼 Обновляем меню..."
+    # Удаление контекстного меню для каждого расширения
+    foreach ($extension in $global:videoExtensions) {
+        Remove-ContextMenu -extension $extension
+        Add-ContextMenu -extension $extension -scriptPath $scriptPath
+    }
+
+    Write-Output "💼 Готово"
+
+    Environment.Exit(0);
+    exit 0;
+}
+} else {
+    Write-Host "Script runned without Admin privileges"
+}
+
+
+
+
+
+
+
+
+
+
+$ffmpegFolderPath = Join-Path -Path $global:Folder_Work -ChildPath "core\ffmpeg"
 $ffmpegFilePath = Join-Path -Path $ffmpegFolderPath -ChildPath "ffmpeg.exe"
 
 # Создаем папку core\ffmpeg, если она отсутствует
