@@ -111,7 +111,7 @@ function runVKupload() {
       access_token: global.access.VK.access_token,
       name: Title.newTitle,
       album_id: Title.PlayListID,
-      description: global.vars.description === "" ? null : global.vars.description,
+    //   description: global.vars.description === "" ? null : global.vars.description,
       // wallpost: (global.vars.description === "") ? 0 : 1,
       v: 5.95,
     },
