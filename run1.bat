@@ -1,1 +1,0 @@
-'powershell.exe -exec bypass -file "d:\_autovideos3\start.ps1" -File "d:\Вести для публикации в интернет\Отправить в соцсети (сейчас)\___\ВЕСТИ 25.08.mp4" -SocialSend "True" -Notify "True" -Remove "True" AddLogo "True"
