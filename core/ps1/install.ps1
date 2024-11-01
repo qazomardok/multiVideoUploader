@@ -129,7 +129,7 @@ if (([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]:
 
 if ($Reinstall -eq "True") {
 
-    Write-Output "💼 Обновляем меню..."
+    Write-Output "💼 Обновляем контекстное меню windows..."
     # Удаление контекстного меню для каждого расширения
     foreach ($extension in $global:videoExtensions) {
         Remove-ContextMenu -extension $extension
@@ -137,7 +137,7 @@ if ($Reinstall -eq "True") {
     }
 
     Write-Output "💼 Готово"
- 
+
     exit 0;
 }
 } else {
