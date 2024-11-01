@@ -137,8 +137,7 @@ if ($Reinstall -eq "True") {
     }
 
     Write-Output "💼 Готово"
-
-    Environment.Exit(0);
+ 
     exit 0;
 }
 } else {
