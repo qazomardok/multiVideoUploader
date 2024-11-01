@@ -144,7 +144,7 @@ Function Send-Telegram {
 
     Toast $Message
 
-    return
+    # return
 
     $updated = $false
 

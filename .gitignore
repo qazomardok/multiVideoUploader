@@ -4917,4 +4917,4 @@ files/test.mp4
 files/test1.mp4
 files/videoplayback.mp4
 .commands_log/
-core\foldermonitor\FolderMonitor.exe
+core/foldermonitor/FolderMonitor.exe
