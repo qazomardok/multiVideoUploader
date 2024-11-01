@@ -104,6 +104,11 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 PS C:\Users\username> cd H:\autovideo\multiVideoUploader
 PS H:\autovideo\multiVideoUploader> .\start.ps1
 ```
+Для установки контекстного меню выполните:
+```
+PS H:\autovideo\multiVideoUploader> .\start.ps1 -Reinstall "True"
+```
+
 
 ## Замечания
 - Скрипт требует прав администратора для корректной работы в некоторых режимах.
